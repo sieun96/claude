@@ -1,0 +1,150 @@
+<title>5500 월간 로드맵</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F2F5F3; --card:#FFFFFF; --ink:#16201C; --ink-2:#3C4A44;
+    --mute:#6B7A73; --line:#D8E0DB; --line-2:#E8EDEA;
+    --accent:#00805A; --accent-soft:#E0F0E9;
+    --study:#3A5FB0; --study-soft:#E4EAF6;
+    --work:#B06A14; --work-soft:#F7EEDF;
+    --life:#8A4F9E;
+    --p1:#B03A36; --p1-soft:#F7E6E5; --p2:#B06A14; --p3:#5E6D66;
+    --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+    --sans:'IBM Plex Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+      --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+      --accent:#3FD9A2; --accent-soft:#12312A;
+      --study:#8AA6E6; --study-soft:#1A2540; --work:#E5A648; --work-soft:#2E2617; --life:#C79BD9;
+      --p1:#F08A85; --p1-soft:#2E1B1A; --p2:#E5A648; --p3:#9AABA3;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+    --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+    --accent:#3FD9A2; --accent-soft:#12312A;
+    --study:#8AA6E6; --study-soft:#1A2540; --work:#E5A648; --work-soft:#2E2617; --life:#C79BD9;
+    --p1:#F08A85; --p1-soft:#2E1B1A; --p2:#E5A648; --p3:#9AABA3;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding-block:28px 56px;padding-left:16px;padding-right:16px;display:flex;flex-direction:column;gap:40px;}
+  h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em;text-wrap:balance;}
+  p{margin:0;}
+  .intro{display:flex;flex-direction:column;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:16px;}
+  .lbl{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);}
+  .intro h1{font-size:clamp(24px,4vw,32px);}
+  .intro p{font-size:13.5px;color:var(--ink-2);max-width:72ch;}
+
+  #months{display:flex;flex-direction:column;gap:44px;}
+  .month{display:flex;flex-direction:column;gap:12px;}
+  .m-head{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:10px;}
+  @media(max-width:700px){.m-head{grid-template-columns:1fr;}}
+  .m-name{font-size:40px;font-weight:700;line-height:1;letter-spacing:-.03em;}
+  .m-theme{display:flex;flex-direction:column;gap:2px;}
+  .m-theme h2{font-size:19px;}
+  .m-theme p{font-size:12.5px;color:var(--ink-2);}
+  .m-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media(max-width:700px){.m-cols{grid-template-columns:1fr;}}
+  .m-box{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:9px 12px;}
+  .m-box h3{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:5px;}
+  .m-box ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;}
+  .m-box li{font-size:12.5px;display:flex;gap:7px;}
+  .m-box li::before{content:'□';font-family:var(--mono);color:var(--accent);}
+
+  .cal-w{overflow-x:auto;}
+  .cal{display:grid;grid-template-columns:repeat(7,minmax(118px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);min-width:826px;background:var(--card);}
+  .dow{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--mute);padding:5px 7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--line-2);}
+  .cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px 6px 7px;min-height:96px;display:flex;flex-direction:column;gap:3px;}
+  .cell.out{background:var(--paper);}
+  .cell.hol{background:var(--p1-soft);}
+  .c-top{display:flex;align-items:baseline;gap:5px;}
+  .c-num{font-family:var(--mono);font-size:13px;font-weight:600;}
+  .c-tag{font-size:9.5px;font-weight:600;padding:0 5px;border-radius:2px;}
+  .c-tag.mba{background:var(--study-soft);color:var(--study);}
+  .c-tag.h{color:var(--p1);}
+  .ev{font-size:10.5px;line-height:1.3;display:flex;gap:4px;align-items:flex-start;}
+  .ev::before{content:'□';font-family:var(--mono);flex:none;font-size:10px;}
+  .ev.s{color:var(--study);font-weight:600;} .ev.w{color:var(--work);font-weight:500;} .ev.l{color:var(--life);font-size:10px;}
+  .ev .p{font-family:var(--mono);font-size:8.5px;font-weight:600;padding:0 3px;border-radius:2px;border:1px solid currentColor;margin-left:2px;opacity:.85;}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink-2);}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+  .prio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media(max-width:700px){.prio{grid-template-columns:1fr;}}
+  .pr{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:12.5px;color:var(--ink-2);}
+  .pr b{font-family:var(--mono);margin-right:6px;}
+  .pr.P1 b{color:var(--p1);} .pr.P2 b{color:var(--p2);} .pr.P3 b{color:var(--p3);}
+
+  @media print{
+    :root{--paper:#fff;--card:#fff;--ink:#000;--ink-2:#333;--mute:#666;--line:#aaa;--line-2:#eee;
+          --accent:#00664a;--study:#2a4a94;--study-soft:#e8edf7;--work:#8a5210;--work-soft:#faf2e6;--life:#6a3b80;--p1:#8f2c29;--p1-soft:#fbeeed;}
+    @page{size:A4 landscape;margin:9mm;}
+    body{background:#fff;} .wrap{max-width:none;padding:0;gap:0;}
+    .intro{display:none;} #months{gap:0;}
+    .month{break-after:page;gap:8px;} .month:last-child{break-after:auto;}
+    .cal-w{overflow:visible;} .cal{min-width:0;}
+    .cell{min-height:78px;}
+    .m-name{font-size:32px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="lbl">벽에 붙이는 판 · 2026.10 → 2027.03</span>
+    <h1>한 달에 한 장, 5,500까지의 달력</h1>
+    <p>브라우저 인쇄(A4 가로)로 뽑으면 한 달이 한 장에 나온다. 체크는 종이에 하고, 매일의 상세 설명과 저장은 모바일 「5500 데일리」에서 한다.
+      파란 글씨는 공부, 갈색은 포트폴리오, 보라는 홈트. 평일 업무 중 <b>소재 로그 기록(P1)</b>은 매일이라 달력에서는 뺐다.</p>
+  </header>
+  <div id="months"></div>
+</div>
+
+<script>
+const PLAN = __PLAN__;
+const BY = Object.fromEntries(PLAN.days.map(d=>[d.date,d]));
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LES = Object.fromEntries(PLAN.lessons.map(l=>[l.id,l]));
+function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+const out = [];
+for (const [ym, m] of Object.entries(PLAN.months)) {
+  const [y, mo] = ym.split('-').map(Number);
+  let first = new Date(y, mo-1, 1), last = new Date(y, mo, 0);
+  if (ym === '2026-10') first = new Date(2026, 8, 28);
+  if (ym === '2027-03') last = new Date(2027, 2, 28);
+  const start = new Date(first); start.setDate(start.getDate() - ((start.getDay()+6)%7));
+  const end = new Date(last); end.setDate(end.getDate() + (6-((end.getDay()+6)%7)));
+  let cells = '';
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+    const s = iso(d), day = BY[s], inM = d >= first && d <= last && day;
+    if (!inM) { cells += `<div class="cell out"></div>`; continue; }
+    const evs = [];
+    day.items.forEach(it => {
+      if (it.k === 'lesson') { const l = LES[it.lid]; evs.push(`<div class="ev s">${esc(l.id)} ${esc(l.short)}<span class="p">${l.p}</span></div>`); }
+      else if (it.k.startsWith('t')) evs.push(`<div class="ev w">${esc(it.short||it.t)}<span class="p">${it.p}</span></div>`);
+      else if (it.k === 'ex') evs.push(`<div class="ev l">홈트</div>`);
+      else if (it.k === 'wk') evs.push(`<div class="ev w">편수·청구서<span class="p">P1</span></div>`);
+    });
+    const label = (d.getDate()===1 || s===iso(first)) ? (d.getMonth()+1)+'/'+d.getDate() : d.getDate();
+    cells += `<div class="cell ${day.hol?'hol':''}"><div class="c-top"><span class="c-num">${label}</span>${day.mba?'<span class="c-tag mba">MBA</span>':''}${day.hol?`<span class="c-tag h">${esc(day.hol)}</span>`:''}</div>${evs.join('')}</div>`;
+  }
+  out.push(`<section class="month" aria-label="${esc(m.name)}">
+    <div class="m-head"><div class="m-name">${esc(m.name)}</div><div class="m-theme"><h2>${esc(m.theme)}</h2><p>공부: ${esc(m.study)}</p></div></div>
+    <div class="m-cols">
+      <div class="m-box"><h3>이달의 목표</h3><ul>${m.goals.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
+      <div class="m-box"><h3>산출물</h3><ul>${m.outputs.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
+      <div class="m-box"><h3>벅찬 주 규칙</h3><ul><li>P1만: 화 레슨 + 일 정리 + 소재 로그</li><li>MBA 과제 몰리면 토 레슨 → 과제</li><li>홈트 최소 주 2회</li></ul></div>
+    </div>
+    <div class="cal-w"><div class="cal">${['월','화','수','목','금','토','일'].map(w=>`<div class="dow">${w}</div>`).join('')}${cells}</div></div>
+    <div class="legend"><span><i class="sw" style="background:var(--study)"></i>공부 (화 21:30 · 토 20:00, 90분)</span><span><i class="sw" style="background:var(--work)"></i>포트폴리오 (목 21:30 90분 · 일 10:00 2시간)</span><span><i class="sw" style="background:var(--life)"></i>홈트 45분</span><span><i class="sw" style="background:var(--p1-soft);border:1px solid var(--p1)"></i>공휴일 (MBA 휴강 가정)</span></div>
+  </section>`);
+}
+out.push(`<section class="month" aria-label="우선순위"><div class="m-head"><div class="m-name">P</div><div class="m-theme"><h2>우선순위</h2><p>일정이 밀리면 P3부터 뺀다.</p></div></div>
+  <div class="prio">${['P1','P2','P3'].map(k=>`<div class="pr ${k}"><b>${k}</b>${esc(PLAN.priority[k].name)} — ${esc(PLAN.priority[k].desc)}</div>`).join('')}</div></section>`);
+document.getElementById('months').innerHTML = out.join('');
+</script>

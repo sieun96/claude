@@ -1,0 +1,417 @@
+<title>5500 데일리</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F2F5F3; --card:#FFFFFF; --ink:#16201C; --ink-2:#3C4A44;
+    --mute:#6B7A73; --line:#D8E0DB; --line-2:#E8EDEA;
+    --accent:#00805A; --accent-soft:#E0F0E9; --on-accent:#FFFFFF;
+    --study:#3A5FB0; --study-soft:#E4EAF6;
+    --work:#B06A14; --work-soft:#F7EEDF;
+    --life:#8A4F9E; --life-soft:#F0E7F5;
+    --p1:#B03A36; --p1-soft:#F7E6E5;
+    --p2:#B06A14; --p2-soft:#F7EEDF;
+    --p3:#5E6D66; --p3-soft:#E8EDEA;
+    --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+    --sans:'IBM Plex Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+      --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+      --accent:#3FD9A2; --accent-soft:#12312A; --on-accent:#08231A;
+      --study:#8AA6E6; --study-soft:#1A2540;
+      --work:#E5A648; --work-soft:#2E2617;
+      --life:#C79BD9; --life-soft:#281B30;
+      --p1:#F08A85; --p1-soft:#2E1B1A; --p2:#E5A648; --p2-soft:#2E2617; --p3:#9AABA3; --p3-soft:#222E2B;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+    --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+    --accent:#3FD9A2; --accent-soft:#12312A; --on-accent:#08231A;
+    --study:#8AA6E6; --study-soft:#1A2540;
+    --work:#E5A648; --work-soft:#2E2617;
+    --life:#C79BD9; --life-soft:#281B30;
+    --p1:#F08A85; --p1-soft:#2E1B1A; --p2:#E5A648; --p2-soft:#2E2617; --p3:#9AABA3; --p3-soft:#222E2B;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;
+       -webkit-font-smoothing:antialiased;font-size:14px;}
+  .wrap{max-width:640px;margin:0 auto;padding-block:14px 96px;padding-left:16px;padding-right:16px;
+        display:flex;flex-direction:column;gap:14px;}
+  h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em;text-wrap:balance;}
+  p{margin:0;}
+  .mono{font-family:var(--mono);}
+  button{font:inherit;color:inherit;cursor:pointer;}
+  button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* top bar */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .brand{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--mute);text-transform:uppercase;}
+  .sync{font-size:11px;color:var(--mute);display:flex;align-items:center;gap:6px;}
+  .sync::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--mute);}
+  .sync.ok::before{background:var(--accent);} .sync.local::before{background:var(--p2);}
+
+  /* day header */
+  .dayhead{display:flex;flex-direction:column;gap:8px;}
+  .navrow{display:flex;align-items:center;gap:8px;}
+  .navbtn{width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:var(--card);
+          display:grid;place-items:center;font-size:16px;flex:none;}
+  .datebox{flex:1;min-width:0;text-align:center;}
+  .datebox h1{font-size:22px;line-height:1.2;}
+  .datebox .sub{font-size:12px;color:var(--mute);margin-top:2px;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+  .chip{font-size:11.5px;padding:2px 9px;border-radius:20px;background:var(--line-2);color:var(--ink-2);font-weight:500;}
+  .chip.today{background:var(--accent);color:var(--on-accent);}
+  .chip.hol{background:var(--p1-soft);color:var(--p1);}
+  .chip.mba{background:var(--study-soft);color:var(--study);}
+  .linkbtn{border:0;background:none;color:var(--accent);font-size:12.5px;font-weight:600;padding:4px 6px;}
+
+  /* progress */
+  .prog{display:flex;flex-direction:column;gap:5px;}
+  .prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);}
+  .bar{height:6px;border-radius:3px;background:var(--line-2);overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .25s;}
+
+  /* items */
+  .list{display:flex;flex-direction:column;gap:8px;}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 13px;
+        display:grid;grid-template-columns:28px 1fr;gap:4px 10px;align-items:start;}
+  .item.info{background:transparent;border-style:dashed;}
+  .item.done .ttl{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--line);}
+  .cb{width:24px;height:24px;border-radius:6px;border:2px solid var(--line);background:var(--card);
+      display:grid;place-items:center;padding:0;margin-top:1px;}
+  .cb svg{width:14px;height:14px;opacity:0;}
+  .cb[aria-checked="true"]{background:var(--accent);border-color:var(--accent);}
+  .cb[aria-checked="true"] svg{opacity:1;}
+  .cb svg path{stroke:var(--on-accent);}
+  .dot{width:24px;height:24px;display:grid;place-items:center;color:var(--mute);font-size:12px;}
+  .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .slot{font-family:var(--mono);font-size:10.5px;color:var(--mute);}
+  .pb{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.04em;}
+  .pb.P1{background:var(--p1-soft);color:var(--p1);} .pb.P2{background:var(--p2-soft);color:var(--p2);} .pb.P3{background:var(--p3-soft);color:var(--p3);}
+  .ttl{font-size:14.5px;font-weight:600;line-height:1.4;grid-column:2;}
+  .desc{font-size:12.5px;color:var(--ink-2);grid-column:2;}
+  .item .meta{grid-column:2;}
+  .kind-lesson{border-left:3px solid var(--study);}
+  .kind-task{border-left:3px solid var(--work);}
+  .kind-ex{border-left:3px solid var(--life);}
+
+  /* lesson card */
+  .lesson{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .lesson-h{padding:13px 14px;background:var(--study-soft);display:flex;flex-direction:column;gap:3px;}
+  .lesson-h .lbl{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--study);letter-spacing:.06em;}
+  .lesson-h h2{font-size:17px;color:var(--ink);}
+  .lesson-b{padding:4px 14px 14px;display:flex;flex-direction:column;gap:14px;}
+  .blk{display:flex;flex-direction:column;gap:7px;}
+  .blk h3{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;padding-top:12px;}
+  .blk ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+  .blk li{font-size:13.5px;line-height:1.6;color:var(--ink-2);padding-left:14px;position:relative;}
+  .blk li::before{content:'';position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--study);}
+  .blk b{color:var(--ink);font-weight:600;}
+  .steps{display:flex;flex-direction:column;gap:6px;}
+  .step{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+  .quiz{border:1px solid var(--line);border-radius:8px;padding:11px 12px;display:flex;flex-direction:column;gap:8px;}
+  .quiz .q{font-size:13.5px;font-weight:600;}
+  .quiz .a{font-size:13px;color:var(--ink-2);background:var(--accent-soft);border-radius:6px;padding:9px 11px;}
+  .reveal{align-self:flex-start;border:1px solid var(--accent);background:transparent;color:var(--accent);
+          font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:6px;}
+  .outrow{display:flex;flex-direction:column;gap:4px;font-size:13px;}
+  .outrow span{color:var(--ink-2);}
+
+  /* log */
+  .log{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;display:flex;flex-direction:column;gap:10px;}
+  .log h3{font-size:13px;}
+  .mins{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .mins .v{font-family:var(--mono);font-size:18px;font-weight:600;min-width:64px;font-variant-numeric:tabular-nums;}
+  .pill{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:6px 11px;font-size:12.5px;font-weight:500;}
+  textarea{width:100%;min-height:92px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);
+           font:inherit;font-size:13.5px;padding:9px 11px;resize:vertical;}
+  .saved{font-size:11px;color:var(--mute);}
+
+  /* week */
+  .weekcard{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .wday{border-top:1px solid var(--line-2);padding:10px 13px;display:flex;flex-direction:column;gap:6px;}
+  .wday:first-child{border-top:0;}
+  .wday.is-today{background:var(--accent-soft);}
+  .wday-h{display:flex;align-items:baseline;gap:8px;}
+  .wday-h button{border:0;background:none;padding:0;font-weight:600;font-size:14px;text-align:left;}
+  .wday-h .n{font-size:11.5px;color:var(--mute);margin-left:auto;font-family:var(--mono);}
+  .witem{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;font-size:13px;}
+  .witem .t{line-height:1.45;padding-top:2px;}
+  .witem.done .t{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--line);}
+  .witem .s{font-family:var(--mono);font-size:10px;color:var(--mute);margin-right:4px;}
+  .theme{font-size:12.5px;color:var(--ink-2);}
+
+  /* record */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;}
+  .stat .k{font-size:11px;color:var(--mute);}
+  .stat .v{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px;}
+  .sec-t{font-size:15px;margin-top:6px;}
+  .lrow{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line-2);font-size:13px;}
+  .lrow:first-child{border-top:0;}
+  .lrow .id{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .lrow button{border:0;background:none;padding:0;text-align:left;}
+  .st{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--line-2);color:var(--mute);white-space:nowrap;}
+  .st.ok{background:var(--accent-soft);color:var(--accent);}
+  .st.late{background:var(--p1-soft);color:var(--p1);}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px 14px;}
+  .memo{padding:10px 0;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:3px;}
+  .memo:first-child{border-top:0;}
+  .memo .d{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .memo .m{font-size:13px;white-space:pre-wrap;color:var(--ink-2);}
+  .empty{font-size:13px;color:var(--mute);padding:12px 0;}
+
+  /* rules */
+  .rule{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;display:flex;flex-direction:column;gap:7px;}
+  .rule h3{font-size:14.5px;display:flex;align-items:center;gap:8px;}
+  .rule p,.rule li{font-size:13px;color:var(--ink-2);line-height:1.6;}
+  .rule ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+
+  /* tabs */
+  .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+        padding-bottom:env(safe-area-inset-bottom,0px);z-index:5;}
+  .tabs-in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
+  .tab{border:0;background:none;padding:10px 4px 11px;font-size:12px;font-weight:600;color:var(--mute);
+       display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tab svg{width:20px;height:20px;}
+  .tab svg *{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .tab[aria-selected="true"]{color:var(--accent);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+
+<div class="wrap">
+  <div class="top"><span class="brand">5500 데일리</span><span class="sync" id="sync">이 기기에 저장 중</span></div>
+  <main id="view"></main>
+</div>
+<nav class="tabs" aria-label="화면 전환"><div class="tabs-in" role="tablist">
+  <button class="tab" role="tab" data-tab="day" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>오늘</button>
+  <button class="tab" role="tab" data-tab="week" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/></svg>이번 주</button>
+  <button class="tab" role="tab" data-tab="log" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/></svg>기록</button>
+  <button class="tab" role="tab" data-tab="rules" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></svg>원칙</button>
+</div></nav>
+
+<script>
+const PLAN = __PLAN__;
+const DAYS = PLAN.days, BY = Object.fromEntries(DAYS.map(d => [d.date, d]));
+const LES = Object.fromEntries(PLAN.lessons.map(l => [l.id, l]));
+const WD = ['월','화','수','목','금','토','일'];
+const LS = 'p5500.v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CHECK = '<svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayIso(){ return iso(new Date()); }
+function clampDate(s){ return s < PLAN.start ? PLAN.start : s > PLAN.end ? PLAN.end : s; }
+function addDays(s, n){ const d = new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return iso(d); }
+function mondayOf(s){ const d = BY[s]; return addDays(s, -(d ? d.wd : 0)); }
+function weekNo(s){ return Math.floor((new Date(s+'T00:00:00') - new Date(PLAN.start+'T00:00:00'))/(7*864e5))+1; }
+function fmt(s){ const d = new Date(s+'T00:00:00'); return (d.getMonth()+1)+'월 '+d.getDate()+'일'; }
+function monthOf(s){ return PLAN.months[s.slice(0,7)]; }
+
+/* ── 저장: 이 기기(localStorage) + 클라우드(db) ── */
+let state = {};
+try { state = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch(e) { state = {}; }
+let db = null, cloudOk = false;
+const timers = {};
+function rec(s){ return state[s] || (state[s] = {c:{}, memo:'', min:0, u:0}); }
+function persistLocal(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e) {} }
+function setSync(){ const el = $('#sync');
+  if (cloudOk){ el.className='sync ok'; el.textContent='클라우드에 저장됨'; }
+  else { el.className='sync local'; el.textContent='이 기기에 저장됨'; } }
+function touch(s){
+  rec(s).u = Date.now(); persistLocal();
+  if (!db) return;
+  clearTimeout(timers[s]);
+  timers[s] = setTimeout(async () => {
+    try { await db.doc('progress/'+s).set(JSON.parse(JSON.stringify(state[s]))); cloudOk = true; }
+    catch(e){ cloudOk = false; }
+    setSync();
+  }, 700);
+}
+function mergeRemote(id, data){
+  if (!data || !BY[id]) return false;
+  const loc = state[id];
+  if (!loc || (data.u||0) > (loc.u||0)) { state[id] = {c:data.c||{}, memo:data.memo||'', min:data.min||0, u:data.u||0}; return true; }
+  return false;
+}
+(async () => {
+  try { db = await window.claude?.use?.('db'); } catch(e) { db = null; }
+  if (!db) { setSync(); return; }
+  try {
+    const snap = await db.collection('progress').get();
+    snap.docs.forEach(d => mergeRemote(d.id, d.data()));
+    // 이 기기에만 있던 기록을 클라우드로 올린다
+    const remote = new Set(snap.docs.map(d => d.id));
+    for (const s of Object.keys(state)) {
+      const r = snap.docs.find(d => d.id === s);
+      if (!remote.has(s) || (state[s].u||0) > ((r && r.data().u)||0)) await db.doc('progress/'+s).set(JSON.parse(JSON.stringify(state[s])));
+    }
+    cloudOk = true; persistLocal(); setSync(); render();
+    db.collection('progress').onSnapshot(q => {
+      let changed = false;
+      q.docChanges().forEach(ch => { if (ch.type !== 'removed' && !ch.doc.metadata.hasPendingWrites) changed = mergeRemote(ch.doc.id, ch.doc.data()) || changed; });
+      if (changed) { persistLocal(); if (!document.activeElement || document.activeElement.tagName !== 'TEXTAREA') render(); }
+    }, () => { cloudOk = false; setSync(); });
+  } catch(e) { cloudOk = false; setSync(); }
+})();
+
+/* ── 계산 ── */
+const checkable = it => it.p !== '-';
+function dayStats(s){ const d = BY[s]; if (!d) return {n:0,done:0,p1:0,p1d:0};
+  const c = rec(s).c; let n=0,done=0,p1=0,p1d=0;
+  d.items.filter(checkable).forEach(it => { n++; if (c[it.k]) done++; if (it.p==='P1'){ p1++; if (c[it.k]) p1d++; } });
+  return {n,done,p1,p1d}; }
+function sumStats(dates){ return dates.reduce((a,s)=>{ const x=dayStats(s); a.n+=x.n;a.done+=x.done;a.p1+=x.p1;a.p1d+=x.p1d; return a; },{n:0,done:0,p1:0,p1d:0}); }
+function lessonDone(l){ return !!(state[l.date] && state[l.date].c.lesson); }
+function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
+
+/* ── 화면 ── */
+let tab = 'day';
+let cur = clampDate(todayIso());
+let weekStart = mondayOf(cur);
+try { const t = sessionStorage.getItem('p5500.tab'); if (t) tab = t; } catch(e) {}
+
+function itemHTML(s, it){
+  const c = rec(s).c;
+  const kind = it.k==='lesson' ? 'kind-lesson' : it.k.startsWith('t') ? 'kind-task' : it.k==='ex' ? 'kind-ex' : '';
+  if (!checkable(it)) return `<div class="item info"><span class="dot">·</span>
+    <div class="meta"><span class="slot">${esc(it.slot)}</span></div><div class="ttl">${esc(it.t)}</div>${it.d?`<div class="desc">${esc(it.d)}</div>`:''}</div>`;
+  const on = !!c[it.k];
+  return `<div class="item ${kind} ${on?'done':''}">
+    <button class="cb" role="checkbox" aria-checked="${on}" aria-label="${esc(it.t)} 완료" data-s="${s}" data-k="${it.k}">${CHECK}</button>
+    <div class="meta"><span class="slot">${esc(it.slot)}</span><span class="pb ${it.p}">${it.p}</span></div>
+    <div class="ttl">${esc(it.t)}</div>${it.d?`<div class="desc">${esc(it.d)}</div>`:''}</div>`;
+}
+function lessonHTML(s, l){
+  const c = rec(s).c;
+  const steps = l.practice.map((p,i)=>{ const k='s'+i, on=!!c[k];
+    return `<div class="step"><button class="cb" role="checkbox" aria-checked="${on}" aria-label="실습 ${i+1} 완료" data-s="${s}" data-k="${k}">${CHECK}</button><span>${p}</span></div>`; }).join('');
+  const shown = !!c.qa;
+  return `<article class="lesson" aria-label="오늘의 레슨">
+    <div class="lesson-h"><span class="lbl">${esc(l.id)} · ${esc(l.mod)} · ${esc(l.p)}</span><h2>${esc(l.title)}</h2><p style="font-size:13px;color:var(--ink-2)">${esc(l.goal)}</p></div>
+    <div class="lesson-b">
+      <div class="blk"><h3>알아야 할 것</h3><ul>${l.concepts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="blk"><h3>실습</h3><div class="steps">${steps}</div></div>
+      <div class="blk"><h3>확인 문제</h3><div class="quiz"><p class="q">${esc(l.q)}</p>
+        ${shown?`<p class="a">${esc(l.a)}</p>`:`<button class="reveal" data-reveal="${s}">답 보기</button>`}</div></div>
+      ${l.output||l.interview?`<div class="blk"><h3>남길 것</h3><div class="outrow">
+        ${l.output?`<div>산출물 · <span>${esc(l.output)}</span></div>`:''}
+        ${l.interview?`<div>막아주는 질문 · <span>${esc(l.interview)}</span></div>`:''}</div></div>`:''}
+    </div></article>`;
+}
+function renderDay(){
+  const s = cur, d = BY[s], r = rec(s), m = monthOf(s);
+  const isToday = s === todayIso();
+  const st = dayStats(s);
+  const chips = [isToday?'<span class="chip today">오늘</span>':'', d.hol?`<span class="chip hol">${esc(d.hol)}</span>`:'',
+    d.mba?'<span class="chip mba">MBA</span>':'', `<span class="chip">${weekNo(s)}주차</span>`].join('');
+  const les = d.items.find(i=>i.k==='lesson');
+  return `<section class="dayhead">
+      <div class="navrow">
+        <button class="navbtn" data-nav="-1" aria-label="전날">‹</button>
+        <div class="datebox"><h1>${fmt(s)} (${WD[d.wd]})</h1><p class="sub">${m?esc(m.name+' · '+m.theme):''}</p></div>
+        <button class="navbtn" data-nav="1" aria-label="다음날">›</button>
+      </div>
+      <div class="chips">${chips}${!isToday&&todayIso()>=PLAN.start&&todayIso()<=PLAN.end?'<button class="linkbtn" data-goto="today">오늘로</button>':''}</div>
+    </section>
+    ${st.n?`<div class="prog"><div class="prog-row"><span>오늘 체크 ${st.done}/${st.n}</span><span>P1 ${st.p1d}/${st.p1}</span></div><div class="bar"><i style="width:${pct(st.done,st.n)}%"></i></div></div>`:''}
+    <div class="list">${d.items.map(it=>itemHTML(s,it)).join('')||'<p class="empty">계획된 일이 없는 날이다. 쉰다.</p>'}</div>
+    ${les?lessonHTML(s, LES[les.lid]):''}
+    <section class="log" aria-label="공부 기록">
+      <h3>공부 시간</h3>
+      <div class="mins"><span class="v" id="minv">${r.min}분</span>
+        <button class="pill" data-min="-15">−15</button><button class="pill" data-min="15">+15</button><button class="pill" data-min="30">+30</button><button class="pill" data-min="90">+90</button></div>
+      <h3>메모</h3>
+      <textarea id="memo" placeholder="막힌 개념, 알게 된 숫자, 다음에 할 것">${esc(r.memo)}</textarea>
+      <span class="saved" id="memo-s">${r.u?'마지막 저장 '+new Date(r.u).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'입력하면 자동 저장된다'}</span>
+    </section>`;
+}
+function renderWeek(){
+  const ws = weekStart, dates = [...Array(7)].map((_,i)=>addDays(ws,i)).filter(s=>BY[s]);
+  const st = sumStats(dates), m = monthOf(dates[0]||ws);
+  const lesson = dates.map(s=>BY[s].items.find(i=>i.k==='lesson')).filter(Boolean).map(i=>LES[i.lid]);
+  return `<section class="dayhead"><div class="navrow">
+      <button class="navbtn" data-wnav="-7" aria-label="지난주">‹</button>
+      <div class="datebox"><h1>${weekNo(ws)}주차</h1><p class="sub">${fmt(dates[0])} – ${fmt(dates[dates.length-1])}${m?' · '+esc(m.theme):''}</p></div>
+      <button class="navbtn" data-wnav="7" aria-label="다음 주">›</button></div>
+      ${lesson.length?`<p class="theme" style="text-align:center">이번 주 레슨: ${lesson.map(l=>esc(l.id+' '+l.short)).join(' · ')}</p>`:''}
+    </section>
+    <div class="prog"><div class="prog-row"><span>이번 주 ${st.done}/${st.n}</span><span>P1 ${st.p1d}/${st.p1} (${pct(st.p1d,st.p1)}%)</span></div><div class="bar"><i style="width:${pct(st.done,st.n)}%"></i></div></div>
+    <div class="weekcard">${dates.map(s=>{ const d=BY[s], c=rec(s).c, x=dayStats(s);
+      const rows = d.items.filter(checkable).map(it=>{ const on=!!c[it.k];
+        return `<div class="witem ${on?'done':''}"><button class="cb" role="checkbox" aria-checked="${on}" aria-label="${esc(it.t)} 완료" data-s="${s}" data-k="${it.k}">${CHECK}</button>
+        <span class="t"><span class="s">${esc(it.slot)}</span><span class="pb ${it.p}">${it.p}</span> ${esc(it.t)}</span></div>`; }).join('');
+      return `<div class="wday ${s===todayIso()?'is-today':''}"><div class="wday-h"><button data-open="${s}">${WD[d.wd]} ${fmt(s)}${d.hol?' · '+esc(d.hol):''}${d.mba?' · MBA':''} ›</button><span class="n">${x.n?x.done+'/'+x.n:''}</span></div>${rows||'<span class="theme">쉬는 날</span>'}</div>`; }).join('')}</div>`;
+}
+function renderLog(){
+  const t = todayIso();
+  const past = DAYS.filter(d=>d.date<=t).map(d=>d.date);
+  const p = sumStats(past);
+  const mins = Object.values(state).reduce((a,r)=>a+(r.min||0),0);
+  const ls = PLAN.lessons.filter(l=>!l.id.startsWith('A'));
+  const done = ls.filter(lessonDone).length;
+  const memos = Object.entries(state).filter(([s,r])=>r.memo&&r.memo.trim()).sort((a,b)=>b[0].localeCompare(a[0]));
+  const byMod = {};
+  ls.forEach(l=>{ const k=monthOf(l.date).name; (byMod[k]=byMod[k]||[]).push(l); });
+  return `<h1 style="font-size:20px">기록</h1>
+    <div class="stats">
+      <div class="stat"><div class="k">레슨 완료</div><div class="v">${done}<span style="font-size:12px;color:var(--mute)">/${ls.length}</span></div></div>
+      <div class="stat"><div class="k">공부 시간</div><div class="v">${(mins/60).toFixed(1)}<span style="font-size:12px;color:var(--mute)">h</span></div></div>
+      <div class="stat"><div class="k">오늘까지 P1</div><div class="v">${pct(p.p1d,p.p1)}<span style="font-size:12px;color:var(--mute)">%</span></div></div>
+    </div>
+    ${Object.entries(byMod).map(([k,arr])=>`<h2 class="sec-t">${esc(k)} · ${esc(PLAN.months[arr[0].date.slice(0,7)].study)}</h2><div class="box">${arr.map(l=>{
+      const ok=lessonDone(l), late=!ok&&l.date<t;
+      return `<div class="lrow"><span class="id">${esc(l.id)}</span><button data-open="${l.date}">${esc(l.title)} <span class="slot">${fmt(l.date)}</span></button><span class="st ${ok?'ok':late?'late':''}">${ok?'완료':late?'밀림':'예정'}</span></div>`; }).join('')}</div>`).join('')}
+    <h2 class="sec-t">메모</h2>
+    <div class="box">${memos.length?memos.map(([s,r])=>`<div class="memo"><span class="d">${fmt(s)} (${WD[BY[s].wd]})</span><span class="m">${esc(r.memo)}</span></div>`).join(''):'<p class="empty">아직 메모가 없다. 오늘 화면 아래에 적으면 여기에 모인다.</p>'}</div>`;
+}
+function renderRules(){
+  const P = PLAN.priority;
+  return `<h1 style="font-size:20px">원칙</h1>
+    ${['P1','P2','P3'].map(k=>`<div class="rule"><h3><span class="pb ${k}">${k}</span>${esc(P[k].name)}</h3><p>${esc(P[k].desc)}</p></div>`).join('')}
+    <div class="rule"><h3>벅찬 주에는</h3><ul>
+      <li>P1만 한다: 화요일 레슨 90분 + 일요일 정리 1시간 + 업무 중 소재 로그. 주 2.5시간이면 된다.</li>
+      <li>MBA 과제가 몰리면 토요일 레슨을 과제로 바꾼다. 화요일 레슨은 지킨다.</li>
+      <li>야근으로 21시 넘어 귀가하면 그날 슬롯은 비우고 같은 주 안에서 당긴다.</li>
+      <li>홈트는 줄여도 주 2회는 지킨다.</li>
+      <li>2주 연속 P1이 70% 아래면 P3 과제를 계획에서 뺀다.</li></ul></div>
+    <div class="rule"><h3>영어는 지금 넣지 않는다</h3>
+      <p>3월 이직 타깃이 국내 이커머스 그로스 마케터라면 영어가 서류 통과 조건인 경우는 드물다. 지금 주 6.5시간에 영어를 넣으면 P1(통계)이 밀린다.
+      2/21 타깃 회사 10곳을 정할 때 외국계가 있으면, 2/27에 영문 자기소개 2분만 준비한다. 영어 공부는 이직 후 과제로 둔다.</p></div>
+    <div class="rule"><h3>일정 가정</h3><ul>
+      <li>07:00 기상 · 08:00 출근 · 20:00 귀가(야근 대비) · 23:30 취침. 귀가 후 식사·씻기·집안일 90분.</li>
+      <li>MBA: 수·금 19–21시, 토 9:30–16:00. 월요일은 9/28 · 10/19 · 11/16 · 12/7만.</li>
+      <li>공휴일은 휴강으로 봤다. 종강은 ${fmt(PLAN.mbaLast)}로 가정했다. 다르면 알려주면 고친다.</li></ul></div>`;
+}
+function render(){
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected', b.dataset.tab===tab));
+  const v = $('#view');
+  v.innerHTML = tab==='day'?renderDay():tab==='week'?renderWeek():tab==='log'?renderLog():renderRules();
+  v.style.display='flex'; v.style.flexDirection='column'; v.style.gap='14px';
+}
+
+/* ── 입력 ── */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.tab){ tab=t.dataset.tab; if (tab==='week') weekStart=mondayOf(cur); try{sessionStorage.setItem('p5500.tab',tab);}catch(e){} render(); window.scrollTo(0,0); return; }
+  if (t.dataset.k){ const r=rec(t.dataset.s); r.c[t.dataset.k]=!r.c[t.dataset.k]; if(!r.c[t.dataset.k]) delete r.c[t.dataset.k]; touch(t.dataset.s); const y=window.scrollY; render(); window.scrollTo(0,y); return; }
+  if (t.dataset.nav){ const n=addDays(cur,+t.dataset.nav); if (BY[n]) { cur=n; render(); } return; }
+  if (t.dataset.wnav){ const n=addDays(weekStart,+t.dataset.wnav); if (BY[n]||BY[addDays(n,6)]) { weekStart=n; render(); } return; }
+  if (t.dataset.goto){ cur=clampDate(todayIso()); render(); return; }
+  if (t.dataset.open){ cur=t.dataset.open; tab='day'; render(); window.scrollTo(0,0); return; }
+  if (t.dataset.reveal){ rec(t.dataset.reveal).c.qa=true; touch(t.dataset.reveal); const y=window.scrollY; render(); window.scrollTo(0,y); return; }
+  if (t.dataset.min){ const r=rec(cur); r.min=Math.max(0,(r.min||0)+(+t.dataset.min)); touch(cur); $('#minv').textContent=r.min+'분'; return; }
+});
+let memoT;
+document.addEventListener('input', e => {
+  if (e.target.id!=='memo') return;
+  const s=cur; rec(s).memo=e.target.value;
+  clearTimeout(memoT); memoT=setTimeout(()=>{ touch(s); const el=$('#memo-s'); if(el) el.textContent='저장됨'; },600);
+});
+setSync(); render();
+</script>
