@@ -516,7 +516,7 @@ def build():
         # 업무 중 (평일, 공휴일 제외)
         if wd < 5 and not hol:
             if wd == 4:
-                items.append(dict(k="wk", slot="업무 중", p="P1", t="API 청구서 캡처", d="편당 원가 계산용. 편수는 소재관리대장에 있으니 청구액만 남긴다."))
+                items.append(dict(k="wk", slot="퇴근 후", p="P1", t="주간 트래킹 실행", d="노트북 켜고 '주간트래킹_금요일.bat' 더블클릭(또는 python lansinoh_meta/weekly_track.py). 메타·시트 최신 데이터를 받아 소재 성과를 집계하고 계획 시트 주간점검에 자동 기록한다. 3분이면 끝난다."))
         if mba:
             items.append(dict(k="mba", slot="19:00–21:00" if wd != 5 else "09:30–16:00", p="-", t="MBA 수업", d=""))
         # 저녁 슬롯
