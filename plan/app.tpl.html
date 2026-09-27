@@ -297,6 +297,7 @@ function lessonHTML(s, l){
     <div class="lesson-b">
       ${PLAN.why[l.mod]?`<div class="blk"><h3>이걸 왜 하나</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(PLAN.why[l.mod])}</p></div>`:''}
       <div class="blk"><h3>알아야 할 것</h3><ul>${l.concepts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      ${l.use?`<div class="blk"><h3>실무에 쓰는 법</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(l.use)}</p></div>`:''}
       <div class="blk"><h3>실습</h3><div class="steps">${steps}</div></div>
       <div class="blk"><h3>확인 문제</h3><div class="quiz"><p class="q">${esc(l.q)}</p>
         ${shown?`<p class="a">${esc(l.a)}</p>`:`<button class="reveal" data-reveal="${s}">답 보기</button>`}</div></div>
