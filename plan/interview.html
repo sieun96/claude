@@ -1,0 +1,192 @@
+<title>포트폴리오·면접 노트</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F2F5F3; --card:#FFFFFF; --ink:#16201C; --ink-2:#3C4A44;
+    --mute:#6B7A73; --line:#D8E0DB; --line-2:#E8EDEA;
+    --accent:#00805A; --accent-soft:#E0F0E9;
+    --warn:#B06A14; --warn-soft:#F7EEDF;
+    --risk:#B03A36; --risk-soft:#F7E6E5;
+    --fill:#3A5FB0; --fill-soft:#E4EAF6;
+    --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+    --sans:'IBM Plex Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+      --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+      --accent:#3FD9A2; --accent-soft:#12312A; --warn:#E5A648; --warn-soft:#2E2617;
+      --risk:#F08A85; --risk-soft:#2E1B1A; --fill:#8AA6E6; --fill-soft:#1A2540;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#101513; --card:#182120; --ink:#EAF0EC; --ink-2:#B6C3BC;
+    --mute:#84978E; --line:#2B3936; --line-2:#222E2B;
+    --accent:#3FD9A2; --accent-soft:#12312A; --warn:#E5A648; --warn-soft:#2E2617;
+    --risk:#F08A85; --risk-soft:#2E1B1A; --fill:#8AA6E6; --fill-soft:#1A2540;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding-block:36px 64px;padding-left:18px;padding-right:18px;display:flex;flex-direction:column;gap:36px;}
+  h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em;text-wrap:balance;}
+  p{margin:0;}
+  header{border-bottom:2px solid var(--ink);padding-bottom:18px;display:flex;flex-direction:column;gap:10px;}
+  .lbl{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);}
+  h1{font-size:clamp(26px,5vw,36px);line-height:1.15;}
+  .sub{font-size:14.5px;color:var(--ink-2);max-width:66ch;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--ink-2);}
+  .st{font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;letter-spacing:.04em;white-space:nowrap;}
+  .st.have{background:var(--accent-soft);color:var(--accent);}
+  .st.wip{background:var(--warn-soft);color:var(--warn);}
+  .st.none{background:var(--risk-soft);color:var(--risk);}
+  .fill{background:var(--fill-soft);color:var(--fill);font-family:var(--mono);font-size:.92em;padding:0 4px;border-radius:3px;white-space:nowrap;}
+
+  section{display:flex;flex-direction:column;gap:14px;}
+  h2{font-size:21px;display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+  h2 .n{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .note{font-size:13.5px;color:var(--ink-2);max-width:70ch;}
+
+  .slides{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden;}
+  .sl{display:grid;grid-template-columns:44px 1fr auto;gap:4px 14px;padding:14px 16px;border-top:1px solid var(--line-2);align-items:start;}
+  .sl:first-child{border-top:0;}
+  @media(max-width:560px){.sl{grid-template-columns:34px 1fr;} .sl .st{grid-column:2;justify-self:start;}}
+  .sl .no{font-family:var(--mono);font-size:12px;color:var(--mute);font-weight:600;padding-top:2px;}
+  .sl h3{font-size:15px;}
+  .sl .body{display:flex;flex-direction:column;gap:5px;}
+  .sl p{font-size:13px;color:var(--ink-2);}
+  .sl .src{font-size:11.5px;color:var(--mute);}
+
+  .qgroup{display:flex;flex-direction:column;gap:10px;}
+  .qgroup h3{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding-top:6px;}
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;break-inside:avoid;}
+  .qa .q{font-size:15px;font-weight:600;}
+  .qa .a{font-size:13.5px;line-height:1.7;color:var(--ink);border-left:3px solid var(--accent);padding-left:12px;}
+  .qa .tip{font-size:12.5px;color:var(--ink-2);display:flex;gap:6px;}
+  .qa .tip b{color:var(--warn);font-weight:600;flex:none;}
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
+  .rule{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;font-size:13px;color:var(--ink-2);}
+  .rule b{display:block;color:var(--ink);font-size:14px;margin-bottom:3px;}
+  footer{border-top:1px solid var(--line);padding-top:14px;font-size:12px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 18px;}
+  @media print{
+    :root{--paper:#fff;--card:#fff;--ink:#000;--ink-2:#333;--mute:#666;--line:#bbb;--line-2:#ddd;}
+    @page{margin:14mm;} body{background:#fff;} .wrap{max-width:none;padding:0;gap:22px;}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="lbl">포트폴리오 · 면접 · 초안 (노션 대조 전)</span>
+    <h1>덱에 반드시 들어갈 것과 면접에서 받을 질문</h1>
+    <p class="sub">5,500을 제시하려면 덱의 모든 주장에 숫자와 출처가 있어야 한다. 아래는 지금 확보된 근거와 앞으로 채울 근거를 구분한 목록이다.
+      <span class="fill">[ ]</span>로 표시한 칸은 실제 숫자가 들어갈 자리다. 노션·관리대장과 대조한 뒤 채운다.</p>
+    <div class="legend"><span><span class="st have">보유</span> 지금 숫자와 출처가 있음</span><span><span class="st wip">보강 중</span> 계획에 따라 채우는 중</span><span><span class="st none">미확보</span> 아직 없음</span></div>
+  </header>
+
+  <section>
+    <h2><span class="n">01</span>포트폴리오 필수 구성</h2>
+    <p class="note">순서는 면접관이 궁금해하는 순서다: 누구인가 → 무엇을 해냈나 → 어떻게 했나 → 믿을 수 있나 → 어디까지 책임졌나.</p>
+    <div class="slides">
+      <div class="sl"><span class="no">1</span><div class="body"><h3>한 줄 소개</h3>
+        <p>“콘텐츠에서 시작해 퍼포먼스와 데이터로 역량을 넓힌 그로스 마케터. AI로 소재 원가를 낮추고, 실험으로 판단 근거를 만든다.”</p>
+        <p class="src">근거: 경력 흐름</p></div><span class="st have">보유</span></div>
+      <div class="sl"><span class="no">2</span><div class="body"><h3>대표 성과 ① 메타 광고 운영</h3>
+        <p>8/31 전담 이후 광고비 −9.9% 상태에서 ROAS +32.1% (8일). 전년 동기 대비 <span class="fill">[ ]</span>, 대조군 대비 <span class="fill">[ ]</span>로 보강한다.</p>
+        <p class="src">근거: 메타 보고서 · 보강 1월 (L31·L35)</p></div><span class="st wip">보강 중</span></div>
+      <div class="sl"><span class="no">3</span><div class="body"><h3>대표 성과 ② AI 소재 자동화</h3>
+        <p>편당 원가 디자이너 13,000원 → <span class="fill">[ ]</span>원 (<span class="fill">[ ]</span>% 절감), 주 세팅 편수 <span class="fill">[ ]</span> → <span class="fill">[ ]</span>편, 같은 캠페인에서 성과 차이 <span class="fill">[ ]</span>.</p>
+        <p class="src">근거: 소재관리대장 · API 청구서 · 13,000원 산출 근거 · 확정 11/5</p></div><span class="st wip">보강 중</span></div>
+      <div class="sl"><span class="no">4</span><div class="body"><h3>대표 성과 ③ 실험 · 예측 체계</h3>
+        <p>기존 실험 <span class="fill">[18]</span>건 재분석(<span class="fill">[ ]</span>건 유의), 표본 설계 기준 도입. SKU 판매 예측을 랜덤포레스트에서 선형회귀로 바꿔 발주 근거를 설명 가능하게 함.</p>
+        <p class="src">근거: 노션 실험 기록 · 재분석 11월 · SKU 모델</p></div><span class="st wip">보강 중</span></div>
+      <div class="sl"><span class="no">5</span><div class="body"><h3>방법: 파이프라인과 검증</h3>
+        <p>Claude Code로 구현한 소재 생성 파이프라인. 요구사항 정의, 로직 설계, 검증 게이트, 감시 스크립트, 접근 제한은 직접 설계. 구조도 1장.</p>
+        <p class="src">근거: 저장소 · 구조도</p></div><span class="st have">보유</span></div>
+      <div class="sl"><span class="no">6</span><div class="body"><h3>품질 증거: 나란히 비교</h3>
+        <p>같은 소재를 고비용/저비용 경로로 만든 1쌍과 각 성과. “싸면 품질이 떨어지지 않나”에 대한 답.</p>
+        <p class="src">근거: 레퍼런스 폴더 · 10월부터 수집</p></div><span class="st none">미확보</span></div>
+      <div class="sl"><span class="no">7</span><div class="body"><h3>담당 범위</h3>
+        <p>월 운용 예산 <span class="fill">[ ]</span>, 단독 판단 영역(손실컷 기준, 소재 ON/OFF, 실험 설계), 타팀 협업 방식.</p>
+        <p class="src">근거: 12월 담당 범위 1p</p></div><span class="st none">미확보</span></div>
+      <div class="sl"><span class="no">8</span><div class="body"><h3>조직 확산</h3>
+        <p>메타에서 검증한 소구를 인플루언서 마케터에게 전달한 기록 <span class="fill">[ ]</span>건. 유료 채널 이식은 확정 시 추가.</p>
+        <p class="src">근거: 소구 전파 기록 · 11월 시작</p></div><span class="st none">미확보</span></div>
+      <div class="sl"><span class="no">9</span><div class="body"><h3>한계와 다음 단계</h3>
+        <p>“초기 실험은 검정 없이 판단했다. 재분석 후 표본 기준을 도입했다.” 약점을 먼저 말하고 고친 과정을 보여준다.</p>
+        <p class="src">근거: 재분석 리포트</p></div><span class="st wip">보강 중</span></div>
+    </div>
+    <p class="note">덱 전체에서 숫자 기준을 하나로 맞춘다. 블로그 배수는 덱 16배, 이력서 25배로 서로 다르다. 2/18 숫자 전수 검증 때 하나로 통일한다.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">02</span>면접 예상 질문과 모범 답변</h2>
+    <p class="note">답변 틀은 모두 같다: <b>상황(한 문장) → 내가 한 일 → 숫자 → 한계 인정</b>. 60초를 넘기지 않는다.</p>
+
+    <div class="qgroup"><h3>동기 · 역할</h3>
+      <div class="qa"><p class="q">1분 자기소개 해주세요.</p>
+        <p class="a">콘텐츠 마케팅으로 시작해 지금은 메타 광고 운영과 데이터 분석을 맡고 있습니다. 두 가지를 해왔습니다. 하나는 AI 소재 파이프라인을 만들어 편당 원가를 13,000원에서 <span class="fill">[ ]</span>원으로 낮추고 주 <span class="fill">[ ]</span>편을 세팅하게 만든 것, 다른 하나는 광고비를 9.9% 줄이면서 ROAS를 32.1% 올린 것입니다. 지금은 실험 결과를 통계적으로 검증하는 체계를 만들고 있습니다.</p>
+        <p class="tip"><b>주의</b>성과 2개와 지금 하는 일 1개. 경력 나열은 하지 않는다.</p></div>
+      <div class="qa"><p class="q">온누리 5개월 만에 왜 이직하시나요?</p>
+        <p class="a">콘텐츠에서 퍼포먼스와 데이터로 역량을 넓혔고, 실제로 성과도 냈습니다. 그런데 지금 조직에서는 그 역량을 쓸 수 있는 범위가 제한적입니다. 예산과 채널을 더 넓게 다루면서 실험 체계를 키울 수 있는 곳에서 일하고 싶습니다.</p>
+        <p class="tip"><b>주의</b>연봉과 회사 불만은 말하지 않는다. ‘범위’로 말한다.</p></div>
+      <div class="qa"><p class="q">혼자 판단하고 끝낸 일은 어디까지인가요?</p>
+        <p class="a">손실컷 기준, 소재 ON/OFF, 실험 설계는 제가 판단하고 결과까지 책임집니다. 월 <span class="fill">[ ]</span>원 예산 안에서 운영했습니다. 디자인처럼 다른 팀이 필요한 일은 요청 범위와 일정을 제가 정해서 진행했습니다.</p>
+        <p class="tip"><b>근거</b>12월 담당 범위 1p를 채운 뒤 숫자를 넣는다.</p></div>
+    </div>
+
+    <div class="qgroup"><h3>성과 검증</h3>
+      <div class="qa"><p class="q">ROAS +32.1%, 8일은 너무 짧지 않나요?</p>
+        <p class="a">맞습니다. 전담을 8/31에 시작해서 확보된 데이터가 8일이었습니다. 그래서 두 가지로 보강했습니다. 작년 같은 기간에는 <span class="fill">[ ]</span>% 움직였고, 광고를 건드리지 않은 캠페인과 비교한 차이는 <span class="fill">[ ]</span>입니다. 그리고 이 개선은 광고비를 9.9% 줄인 상태에서 나왔습니다.</p>
+        <p class="tip"><b>주의</b>짧다는 걸 먼저 인정한다. 방어는 그 다음이다.</p></div>
+      <div class="qa"><p class="q">원가 절감률은 어떻게 계산했나요?</p>
+        <p class="a">분모는 디자이너 1편 기준 13,000원이고, 재생성 포함 여부를 담당자에게 확인했습니다. 분자는 4주간 API 청구액을 세팅 편수로 나눈 편당 원가 <span class="fill">[ ]</span>원입니다. 영상 생성비, 이미지비, 검수 LLM 비용을 모두 넣었고, 검수 비용이 전체의 절반가량이라는 것도 이때 알았습니다.</p>
+        <p class="tip"><b>근거</b>11/5 절감률 확정. 72%·77%·88% 중 실측값 하나로 통일.</p></div>
+      <div class="qa"><p class="q">싼 모델을 쓰면 품질이 떨어지지 않나요?</p>
+        <p class="a">말보다 보여드리는 게 정확합니다. [덱의 비교 슬라이드] 같은 소재를 두 경로로 만든 것이고, 같은 캠페인에서 CTR <span class="fill">[ ]</span> vs <span class="fill">[ ]</span>로 차이가 없었습니다. 품질이 필요한 소재는 여전히 디자이너에게 맡기고, 테스트용 물량을 AI로 늘렸습니다.</p>
+        <p class="tip"><b>근거</b>10월 1쌍 생성 → 성과 비교.</p></div>
+    </div>
+
+    <div class="qgroup"><h3>통계 · 데이터</h3>
+      <div class="qa"><p class="q">A/B 테스트 유의성 검정은 하셨나요?</p>
+        <p class="a">초기 실험은 사전 기간과 요일 구성만 맞췄고 검정은 하지 않았습니다. 그래서 기존 <span class="fill">[18]</span>건을 다시 분석했고, <span class="fill">[ ]</span>건만 유의했고 <span class="fill">[ ]</span>건은 표본이 부족해 판정을 보류해야 했습니다. 그 뒤로는 테스트 전에 필요한 표본과 기간을 먼저 계산합니다.</p>
+        <p class="tip"><b>근거</b>11월 재분석 리포트. 11월 전이라면 “검정까지는 못 갔다”고 인정한다.</p></div>
+      <div class="qa"><p class="q">소재 10개 중 하나가 좋았다면 우연일 가능성은요?</p>
+        <p class="a">꽤 큽니다. 차이가 없어도 10번 비교하면 한 번쯤 유의하게 나올 확률이 40% 정도입니다. 그래서 여러 개를 동시에 돌린 결과는 후보 선별로만 쓰고, 위너 후보를 1:1로 다시 붙여 확정합니다.</p></div>
+      <div class="qa"><p class="q">표본 크기는 어떻게 정하셨어요?</p>
+        <p class="a">기준 전환율, 잡고 싶은 최소 차이, 유의수준 5%, 검정력 80%로 계산합니다. 예를 들어 전환율 4%에서 1%p를 잡으려면 그룹당 약 6,700명이 필요하고, 하루 방문이 800명이면 3주를 돌려야 합니다. 그 전에는 결과를 보고 멈추지 않습니다.</p></div>
+      <div class="qa"><p class="q">랜덤포레스트에서 선형회귀로 바꾼 이유는?</p>
+        <p class="a">정확도 차이가 <span class="fill">[ ]</span>%p로 크지 않았고, 발주 담당자에게 ‘왜 이만큼 주문하나’를 설명해야 했습니다. 선형회귀는 광고비, 프로모션, 요일이 각각 판매에 얼마나 영향을 주는지 계수로 보여줄 수 있습니다.</p></div>
+    </div>
+
+    <div class="qgroup"><h3>기술 · 협업</h3>
+      <div class="qa"><p class="q">코드는 직접 짜신 건가요?</p>
+        <p class="a">개발자는 아닙니다. Claude Code로 구현했고, 요구사항 정의와 로직 설계, 검증과 배포는 제가 했습니다. 잘못된 소재가 나가지 않게 검증 게이트를 두고, 파이프라인이 멈추면 알림이 오는 감시 스크립트와 접근 제한을 설계했습니다.</p>
+        <p class="tip"><b>주의</b>먼저 밝힌다. 숨기면 꼬리 질문에서 무너진다.</p></div>
+      <div class="qa"><p class="q">실패한 경험을 말해주세요.</p>
+        <p class="a">초기 실험을 며칠 보고 판단한 적이 있습니다. 재분석해 보니 <span class="fill">[ ]</span>건은 우연과 구분할 수 없는 결과였습니다. 그 뒤로 실험 설계서를 만들어 기간과 판정 기준을 먼저 적고 시작합니다.</p>
+        <p class="tip"><b>근거</b>재분석에서 당시 판정과 달라진 건을 예로 쓴다.</p></div>
+      <div class="qa"><p class="q">다른 팀과 의견이 달랐던 경험은?</p>
+        <p class="a"><span class="fill">[노션에서 실제 사례 1건]</span> 상황 → 상대의 우려 → 제가 가져간 데이터 → 합의한 결과 순서로 말합니다.</p>
+        <p class="tip"><b>미확보</b>실제 사례를 노션에서 고른다.</p></div>
+    </div>
+
+    <div class="qgroup"><h3>연봉</h3>
+      <div class="qa"><p class="q">희망 연봉은요?</p>
+        <p class="a">5,300~5,500을 희망합니다. 월 <span class="fill">[ ]</span>원 예산을 운영했고, 소재 원가를 연 <span class="fill">[ ]</span>원 줄였고, 실험 체계를 만든 경험을 기준으로 잡았습니다.</p>
+        <p class="tip"><b>방어선</b>5,000. 그 아래면 직급, 6개월 후 재협상, 성과급을 묻는다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">03</span>답변할 때 지킬 것</h2>
+    <div class="rules">
+      <div class="rule"><b>숫자는 덱과 같게</b>답변 속 숫자가 덱과 하나라도 다르면 전체 신뢰가 떨어진다.</div>
+      <div class="rule"><b>약점은 먼저</b>8일, 검정 미실시, 코드 비전공. 찔리기 전에 말하고 고친 과정을 붙인다.</div>
+      <div class="rule"><b>60초</b>길면 요점이 흐려진다. 꼬리 질문은 상대가 묻게 둔다.</div>
+      <div class="rule"><b>“우리”보다 “제가”</b>담당 범위를 드러내려면 주어를 분명히 한다.</div>
+    </div>
+  </section>
+
+  <footer><span>박시은 · 그로스 마케터</span><span>작성 2026.09.27 · 노션 대조 전 초안</span><span>연계: 5500 데일리 · 월간 로드맵 · 실행안</span></footer>
+</div>

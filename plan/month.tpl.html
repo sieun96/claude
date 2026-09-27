@@ -100,7 +100,7 @@
     <span class="lbl">벽에 붙이는 판 · 2026.10 → 2027.03</span>
     <h1>한 달에 한 장, 5,500까지의 달력</h1>
     <p>브라우저 인쇄(A4 가로)로 뽑으면 한 달이 한 장에 나온다. 체크는 종이에 하고, 매일의 상세 설명과 저장은 모바일 「5500 데일리」에서 한다.
-      파란 글씨는 공부, 갈색은 포트폴리오, 보라는 홈트. 평일 업무 중 <b>소재 로그 기록(P1)</b>은 매일이라 달력에서는 뺐다.</p>
+      파란 글씨는 공부, 갈색은 포트폴리오, 보라는 홈트. 소재 편수와 세팅 이력은 기존 소재관리대장에서 본다.</p>
   </header>
   <div id="months"></div>
 </div>
@@ -128,7 +128,7 @@ for (const [ym, m] of Object.entries(PLAN.months)) {
       if (it.k === 'lesson') { const l = LES[it.lid]; evs.push(`<div class="ev s">${esc(l.id)} ${esc(l.short)}<span class="p">${l.p}</span></div>`); }
       else if (it.k.startsWith('t')) evs.push(`<div class="ev w">${esc(it.short||it.t)}<span class="p">${it.p}</span></div>`);
       else if (it.k === 'ex') evs.push(`<div class="ev l">홈트</div>`);
-      else if (it.k === 'wk') evs.push(`<div class="ev w">편수·청구서<span class="p">P1</span></div>`);
+      else if (it.k === 'wk') evs.push(`<div class="ev w">청구서 캡처<span class="p">P1</span></div>`);
     });
     const label = (d.getDate()===1 || s===iso(first)) ? (d.getMonth()+1)+'/'+d.getDate() : d.getDate();
     cells += `<div class="cell ${day.hol?'hol':''}"><div class="c-top"><span class="c-num">${label}</span>${day.mba?'<span class="c-tag mba">MBA</span>':''}${day.hol?`<span class="c-tag h">${esc(day.hol)}</span>`:''}</div>${evs.join('')}</div>`;
@@ -138,7 +138,7 @@ for (const [ym, m] of Object.entries(PLAN.months)) {
     <div class="m-cols">
       <div class="m-box"><h3>이달의 목표</h3><ul>${m.goals.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
       <div class="m-box"><h3>산출물</h3><ul>${m.outputs.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
-      <div class="m-box"><h3>벅찬 주 규칙</h3><ul><li>P1만: 화 레슨 + 일 정리 + 소재 로그</li><li>MBA 과제 몰리면 토 레슨 → 과제</li><li>홈트 최소 주 2회</li></ul></div>
+      <div class="m-box"><h3>벅찬 주 규칙</h3><ul><li>P1만: 화 레슨 + 일 정리 + 금 청구서</li><li>MBA 과제 몰리면 토 레슨 → 과제</li><li>홈트 최소 주 2회</li></ul></div>
     </div>
     <div class="cal-w"><div class="cal">${['월','화','수','목','금','토','일'].map(w=>`<div class="dow">${w}</div>`).join('')}${cells}</div></div>
     <div class="legend"><span><i class="sw" style="background:var(--study)"></i>공부 (화 21:30 · 토 20:00, 90분)</span><span><i class="sw" style="background:var(--work)"></i>포트폴리오 (목 21:30 90분 · 일 10:00 2시간)</span><span><i class="sw" style="background:var(--life)"></i>홈트 45분</span><span><i class="sw" style="background:var(--p1-soft);border:1px solid var(--p1)"></i>공휴일 (MBA 휴강 가정)</span></div>

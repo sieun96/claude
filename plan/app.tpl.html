@@ -295,6 +295,7 @@ function lessonHTML(s, l){
   return `<article class="lesson" aria-label="오늘의 레슨">
     <div class="lesson-h"><span class="lbl">${esc(l.id)} · ${esc(l.mod)} · ${esc(l.p)}</span><h2>${esc(l.title)}</h2><p style="font-size:13px;color:var(--ink-2)">${esc(l.goal)}</p></div>
     <div class="lesson-b">
+      ${PLAN.why[l.mod]?`<div class="blk"><h3>이걸 왜 하나</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(PLAN.why[l.mod])}</p></div>`:''}
       <div class="blk"><h3>알아야 할 것</h3><ul>${l.concepts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
       <div class="blk"><h3>실습</h3><div class="steps">${steps}</div></div>
       <div class="blk"><h3>확인 문제</h3><div class="quiz"><p class="q">${esc(l.q)}</p>
@@ -375,7 +376,7 @@ function renderRules(){
   return `<h1 style="font-size:20px">원칙</h1>
     ${['P1','P2','P3'].map(k=>`<div class="rule"><h3><span class="pb ${k}">${k}</span>${esc(P[k].name)}</h3><p>${esc(P[k].desc)}</p></div>`).join('')}
     <div class="rule"><h3>벅찬 주에는</h3><ul>
-      <li>P1만 한다: 화요일 레슨 90분 + 일요일 정리 1시간 + 업무 중 소재 로그. 주 2.5시간이면 된다.</li>
+      <li>P1만 한다: 화요일 레슨 90분 + 일요일 정리 1시간 + 금요일 청구서 캡처. 주 2.5시간이면 된다.</li>
       <li>MBA 과제가 몰리면 토요일 레슨을 과제로 바꾼다. 화요일 레슨은 지킨다.</li>
       <li>야근으로 21시 넘어 귀가하면 그날 슬롯은 비우고 같은 주 안에서 당긴다.</li>
       <li>홈트는 줄여도 주 2회는 지킨다.</li>
@@ -383,6 +384,7 @@ function renderRules(){
     <div class="rule"><h3>영어는 지금 넣지 않는다</h3>
       <p>3월 이직 타깃이 국내 이커머스 그로스 마케터라면 영어가 서류 통과 조건인 경우는 드물다. 지금 주 6.5시간에 영어를 넣으면 P1(통계)이 밀린다.
       2/21 타깃 회사 10곳을 정할 때 외국계가 있으면, 2/27에 영문 자기소개 2분만 준비한다. 영어 공부는 이직 후 과제로 둔다.</p></div>
+    <div class="rule"><h3>검수 대기</h3><p>레슨과 과제는 실무 자료(박시은 노션, 소재관리대장) 대조 전 초안이다. 특히 ‘실험 18건’과 12~1월 레슨은 실제 업무와 맞는지 확인한 뒤 바뀔 수 있다. 체크 기록은 그대로 유지된다.</p></div>
     <div class="rule"><h3>일정 가정</h3><ul>
       <li>07:00 기상 · 08:00 출근 · 20:00 귀가(야근 대비) · 23:30 취침. 귀가 후 식사·씻기·집안일 90분.</li>
       <li>MBA: 수·금 19–21시, 토 9:30–16:00. 월요일은 9/28 · 10/19 · 11/16 · 12/7만.</li>
