@@ -178,6 +178,28 @@
   .rule p,.rule li{font-size:13px;color:var(--ink-2);line-height:1.6;}
   .rule ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
 
+  /* terms · examples */
+  .terms{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .term{padding:9px 11px;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:2px;}
+  .term:first-child{border-top:0;}
+  .term b{font-size:13px;color:var(--ink);}
+  .term span{font-size:12.5px;color:var(--ink-2);line-height:1.55;}
+  .term i{font-style:normal;font-size:11.5px;color:var(--mute);line-height:1.5;}
+  details.ex{grid-column:2;margin-top:4px;}
+  details.ex summary{font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:4px;}
+  details.ex summary::-webkit-details-marker{display:none;}
+  details.ex summary::before{content:'▸';font-size:10px;}
+  details.ex[open] summary::before{content:'▾';}
+  details.ex p{margin-top:6px;font-size:12.5px;line-height:1.6;color:var(--ink-2);background:var(--accent-soft);border-radius:6px;padding:9px 11px;white-space:pre-wrap;}
+  .step>span{grid-column:2;}
+  .gloss{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px;}
+  .gloss>summary{padding:13px 15px;font-weight:600;font-size:15px;cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;}
+  .gloss>summary::-webkit-details-marker{display:none;}
+  .gloss>summary small{font-size:11.5px;color:var(--mute);font-weight:400;}
+  .gloss-b{padding:0 15px 14px;display:flex;flex-direction:column;gap:12px;}
+  .gloss-b h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--study);margin:4px 0 6px;}
+  .gloss-q{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit;font-size:13.5px;padding:8px 11px;}
+
   /* lessons tab */
   .lessongrp{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px;}
   .lg-h{display:flex;align-items:baseline;gap:9px;padding:13px 15px 5px;}
@@ -307,6 +329,7 @@ function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
 
 /* ── 화면 ── */
 let tab = 'day';
+const openLessons = new Set(); let glossOpen = false, glossQ = '';
 let cur = clampDate(todayIso());
 let weekStart = mondayOf(cur);
 try { const t = sessionStorage.getItem('p5500.tab'); if (t) tab = t; } catch(e) {}
@@ -322,15 +345,18 @@ function itemHTML(s, it){
     <div class="meta"><span class="slot">${esc(it.slot)}</span><span class="pb ${it.p}">${it.p}</span></div>
     <div class="ttl">${esc(it.t)}</div>${it.d?`<div class="desc">${esc(it.d)}</div>`:''}</div>`;
 }
-function lessonHTML(s, l){
+function termsHTML(l){
+  if (!l.terms || !l.terms.length) return '';
+  return `<div class="blk"><h3>이 레슨의 용어</h3><div class="terms">${l.terms.map(i=>{ const g=PLAN.glossary[i];
+    return `<div class="term"><b>${esc(g.t)}</b><span>${esc(g.d)}</span><i>예) ${esc(g.ex)}</i></div>`; }).join('')}</div></div>`;
+}
+function lessonBody(s, l){
   const c = rec(s).c;
-  const steps = l.practice.map((p,i)=>{ const k='s'+i, on=!!c[k];
-    return `<div class="step"><button class="cb" role="checkbox" aria-checked="${on}" aria-label="실습 ${i+1} 완료" data-s="${s}" data-k="${k}">${CHECK}</button><span>${p}</span></div>`; }).join('');
+  const steps = l.practice.map((p,i)=>{ const k='s'+i, on=!!c[k], ex=(l.ex||[])[i];
+    return `<div class="step"><button class="cb" role="checkbox" aria-checked="${on}" aria-label="실습 ${i+1} 완료" data-s="${s}" data-k="${k}">${CHECK}</button><span>${p}</span>${ex?`<details class="ex"><summary>예시 답안</summary><p>${esc(ex)}</p></details>`:''}</div>`; }).join('');
   const shown = !!c.qa;
-  return `<article class="lesson" aria-label="오늘의 레슨">
-    <div class="lesson-h"><span class="lbl">${esc(l.id)} · ${esc(l.mod)} · ${esc(l.p)}</span><h2>${esc(l.title)}</h2><p style="font-size:13px;color:var(--ink-2)">${esc(l.goal)}</p></div>
-    <div class="lesson-b">
-      ${PLAN.why[l.mod]?`<div class="blk"><h3>이걸 왜 하나</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(PLAN.why[l.mod])}</p></div>`:''}
+  return `${PLAN.why[l.mod]?`<div class="blk"><h3>이걸 왜 하나</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(PLAN.why[l.mod])}</p></div>`:''}
+      ${termsHTML(l)}
       <div class="blk"><h3>알아야 할 것</h3><ul>${l.concepts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
       ${l.code?`<div class="blk"><h3>복붙 코드</h3><pre class="code">${esc(l.code)}</pre></div>`:''}
       ${l.prompt?`<div class="blk"><h3>AI 프롬프트</h3><pre class="prompt">${esc(l.prompt)}</pre></div>`:''}
@@ -341,8 +367,12 @@ function lessonHTML(s, l){
         ${shown?`<p class="a">${esc(l.a)}</p>`:`<button class="reveal" data-reveal="${s}">답 보기</button>`}</div></div>
       ${l.output||l.interview?`<div class="blk"><h3>남길 것</h3><div class="outrow">
         ${l.output?`<div>산출물 · <span>${esc(l.output)}</span></div>`:''}
-        ${l.interview?`<div>막아주는 질문 · <span>${esc(l.interview)}</span></div>`:''}</div></div>`:''}
-    </div></article>`;
+        ${l.interview?`<div>막아주는 질문 · <span>${esc(l.interview)}</span></div>`:''}</div></div>`:''}`;
+}
+function lessonHTML(s, l){
+  return `<article class="lesson" aria-label="오늘의 레슨">
+    <div class="lesson-h"><span class="lbl">${esc(l.id)} · ${esc(l.mod)} · ${esc(l.p)}</span><h2>${esc(l.title)}</h2><p style="font-size:13px;color:var(--ink-2)">${esc(l.goal)}</p></div>
+    <div class="lesson-b">${lessonBody(s, l)}</div></article>`;
 }
 function renderDay(){
   const s = cur, d = BY[s], r = rec(s), m = monthOf(s);
@@ -429,29 +459,24 @@ function renderRules(){
       <li>MBA: 수·금 19–21시, 토 9:30–16:00. 월요일은 9/28 · 10/19 · 11/16 · 12/7만.</li>
       <li>공휴일은 휴강으로 봤다. 종강은 ${fmt(PLAN.mbaLast)}로 가정했다. 다르면 알려주면 고친다.</li></ul></div>`;
 }
+function glossaryHTML(){
+  const cats={}; PLAN.glossary.forEach(g=>{(cats[g.cat]=cats[g.cat]||[]).push(g);});
+  return `<details class="gloss"${glossOpen?' open':''} id="gloss"><summary>통계 용어 사전 <small>${PLAN.glossary.length}개 · 눌러서 펼치기</small></summary>
+    <div class="gloss-b"><input class="gloss-q" id="glossq" type="search" placeholder="용어 찾기 (예: p값, 신뢰구간)" value="${esc(glossQ)}">
+    ${Object.entries(cats).map(([cat,arr])=>{ const rows=arr.filter(g=>!glossQ||(g.t+g.d+g.ex).includes(glossQ));
+      return rows.length?`<div><h4>${esc(cat)}</h4><div class="terms">${rows.map(g=>`<div class="term"><b>${esc(g.t)}</b><span>${esc(g.d)}</span><i>예) ${esc(g.ex)}</i></div>`).join('')}</div></div>`:''; }).join('')}</div></details>`;
+}
 function renderLessons(){
   const MN={M1:'실험 설계와 표본 크기',M2:'비율 비교와 p값',M3:'회귀 분석',M4:'시계열','면접':'면접 준비','지원':'지원·협상'};
   const mods={}; PLAN.lessons.forEach(l=>{(mods[l.mod]=mods[l.mod]||[]).push(l);});
-  let out = `<h1 style="font-size:20px">전체 레슨 <span style="font-size:13px;color:var(--mute);font-weight:400">${PLAN.lessons.length}개 · 눌러서 펼치기</span></h1>`;
+  let out = `<h1 style="font-size:20px">레슨 <span style="font-size:13px;color:var(--mute);font-weight:400">${PLAN.lessons.length}개 · 체크는 오늘 탭과 같이 저장</span></h1>${glossaryHTML()}`;
   for(const m in mods){
     const ls=mods[m];
     out += `<div class="lessongrp"><div class="lg-h"><span class="lg-tag">${esc(m)}</span><b>${esc(MN[m]||m)}</b><span class="lg-c">${ls.length}개</span></div>`;
-    if(PLAN.why&&PLAN.why[m]) out+=`<p class="lg-why">${esc(PLAN.why[m])}</p>`;
     ls.forEach(l=>{
       const ck = lessonDone(l) ? ' ✓' : '';
-      const con=(l.concepts||[]).map(c=>`<li>${c}</li>`).join('');
-      const pr=(l.practice||[]).map(p=>`<li>${esc(p)}</li>`).join('');
-      const use=l.use?`<p class="l-use"><b>실무</b> ${esc(l.use)}</p>`:'';
-      const iv=l.interview?`<p class="l-iv"><b>면접</b> ${esc(l.interview)}</p>`:'';
-      out += `<details class="l-item"><summary><span class="l-id">${esc(l.id)}${ck}</span><span class="l-t">${esc(l.title)}</span><span class="l-d">${esc(l.date)}</span></summary>
-        <div class="l-b"><p class="l-goal">${esc(l.goal)}</p>
-        <div class="l-blk"><h4>개념</h4><ul>${con}</ul></div>
-        ${l.code?`<div class="l-blk"><h4>복붙 코드</h4><pre class="code">${esc(l.code)}</pre></div>`:''}
-        ${l.prompt?`<div class="l-blk"><h4>AI 프롬프트</h4><pre class="prompt">${esc(l.prompt)}</pre></div>`:''}
-        ${l.readout?`<div class="l-blk"><h4>결과 읽는 법</h4><p class="l-readout">${esc(l.readout)}</p></div>`:''}
-        <div class="l-blk"><h4>실습</h4><ul class="pr">${pr}</ul></div>
-        <div class="l-quiz"><div class="lq">Q. ${esc(l.q)}</div><div class="la">${esc(l.a)}</div></div>
-        ${use}${iv}</div></details>`;
+      out += `<details class="l-item" data-lid="${esc(l.id)}"${openLessons.has(l.id)?' open':''}><summary><span class="l-id">${esc(l.id)}${ck}</span><span class="l-t">${esc(l.title)}</span><span class="l-d">${esc(l.date.slice(5))}</span></summary>
+        <div class="l-b"><p class="l-goal">${esc(l.goal)}</p><div class="lesson-b" style="padding:0">${lessonBody(l.date, l)}</div></div></details>`;
     });
     out += `</div>`;
   }
@@ -465,6 +490,11 @@ function render(){
 }
 
 /* ── 입력 ── */
+document.addEventListener('toggle', e => {
+  const el = e.target;
+  if (el.matches && el.matches('details.l-item')) { el.open ? openLessons.add(el.dataset.lid) : openLessons.delete(el.dataset.lid); }
+  if (el.id === 'gloss') glossOpen = el.open;
+}, true);
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.tab){ tab=t.dataset.tab; if (tab==='week') weekStart=mondayOf(cur); try{sessionStorage.setItem('p5500.tab',tab);}catch(e){} render(); window.scrollTo(0,0); return; }
@@ -478,6 +508,7 @@ document.addEventListener('click', e => {
 });
 let memoT;
 document.addEventListener('input', e => {
+  if (e.target.id==='glossq'){ glossQ=e.target.value.trim(); const pos=e.target.selectionStart; render(); const q=$('#glossq'); if(q){ q.focus(); try{q.setSelectionRange(pos,pos);}catch(_){} } return; }
   if (e.target.id!=='memo') return;
   const s=cur; rec(s).memo=e.target.value;
   clearTimeout(memoT); memoT=setTimeout(()=>{ touch(s); const el=$('#memo-s'); if(el) el.textContent='저장됨'; },600);

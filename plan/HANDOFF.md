@@ -15,8 +15,9 @@
 | 참고 | 연봉 5500 실행안 | https://claude.ai/artifact/CgCMExbfMWsAeYSa6y8Fud | 원가 계산 근거, G1~G5, 확정할 숫자 표 |
 | 은퇴 예정 | 주간 루틴·5500 로드맵 | https://claude.ai/artifact/4fhYuHDhGFZzbjqMf5icn5 | 데일리·월간으로 대체됨 |
 | 은퇴 예정 | 통계 검수 커리큘럼 | https://claude.ai/artifact/86sLo2h7SCLbQXtv3VGJko | 내용이 데일리 레슨 L01~L36에 들어감 |
+| 은퇴 예정 | 통계 학습 프로그램 | https://claude.ai/artifact/TSSQgBCwUxh9rs5u81LYc5 | 데일리 ‘레슨’ 탭에 전부 흡수 (2026-09-28). 삭제는 사용자 확인 후 |
 
-데일리·월간은 `plan/plan.py` 하나에서 만들어진다. 수정 후 `sh plan/build.sh` → `daily.html`, `monthly.html`을 각 URL로 재게시(Artifact publish에 `url` 지정).
+데일리·월간은 `plan/plan.py` 하나에서 만들어진다. 용어 사전은 `plan/glossary.py`(56개, 레슨 본문에서 자동 매칭), 실습 예시 답안은 `plan/examples.py`(레슨 id별, practice 순서와 1:1). 레슨 카드는 오늘 탭과 레슨 탭이 같은 렌더러(lessonBody)를 쓴다. 수정 후 `sh plan/build.sh` → `daily.html`, `monthly.html`을 각 URL로 재게시(Artifact publish에 `url` 지정).
 
 ## 2. 이번 세션에서 확정한 것
 
