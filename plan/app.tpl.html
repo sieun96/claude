@@ -111,6 +111,13 @@
   .blk li{font-size:13.5px;line-height:1.6;color:var(--ink-2);padding-left:14px;position:relative;}
   .blk li::before{content:'';position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--study);}
   .blk b{color:var(--ink);font-weight:600;}
+  pre.code,pre.prompt{margin:0;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:12px;line-height:1.55;
+    padding:11px 12px;border-radius:8px;overflow-x:auto;white-space:pre;-webkit-overflow-scrolling:touch;tab-size:2;}
+  pre.code{background:#0d1512;color:#d6e3dc;border:1px solid var(--line);}
+  pre.prompt{background:var(--accent-soft);color:var(--ink);border:1px solid var(--accent);white-space:pre-wrap;word-break:break-word;}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) pre.code{background:#0a0f0d;}}
+  .l-readout,.l-blk pre.code,.l-blk pre.prompt{font-size:12px;}
+  .l-readout{font-size:12.5px;color:var(--ink-2);line-height:1.6;white-space:pre-wrap;margin:0;}
   .steps{display:flex;flex-direction:column;gap:6px;}
   .step{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:13.5px;color:var(--ink-2);line-height:1.55;}
   .quiz{border:1px solid var(--line);border-radius:8px;padding:11px 12px;display:flex;flex-direction:column;gap:8px;}
@@ -325,6 +332,9 @@ function lessonHTML(s, l){
     <div class="lesson-b">
       ${PLAN.why[l.mod]?`<div class="blk"><h3>이걸 왜 하나</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(PLAN.why[l.mod])}</p></div>`:''}
       <div class="blk"><h3>알아야 할 것</h3><ul>${l.concepts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      ${l.code?`<div class="blk"><h3>복붙 코드</h3><pre class="code">${esc(l.code)}</pre></div>`:''}
+      ${l.prompt?`<div class="blk"><h3>AI 프롬프트</h3><pre class="prompt">${esc(l.prompt)}</pre></div>`:''}
+      ${l.readout?`<div class="blk"><h3>결과 읽는 법</h3><p style="font-size:13px;color:var(--ink-2);line-height:1.65;white-space:pre-wrap">${esc(l.readout)}</p></div>`:''}
       ${l.use?`<div class="blk"><h3>실무에 쓰는 법</h3><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">${esc(l.use)}</p></div>`:''}
       <div class="blk"><h3>실습</h3><div class="steps">${steps}</div></div>
       <div class="blk"><h3>확인 문제</h3><div class="quiz"><p class="q">${esc(l.q)}</p>
@@ -436,6 +446,9 @@ function renderLessons(){
       out += `<details class="l-item"><summary><span class="l-id">${esc(l.id)}${ck}</span><span class="l-t">${esc(l.title)}</span><span class="l-d">${esc(l.date)}</span></summary>
         <div class="l-b"><p class="l-goal">${esc(l.goal)}</p>
         <div class="l-blk"><h4>개념</h4><ul>${con}</ul></div>
+        ${l.code?`<div class="l-blk"><h4>복붙 코드</h4><pre class="code">${esc(l.code)}</pre></div>`:''}
+        ${l.prompt?`<div class="l-blk"><h4>AI 프롬프트</h4><pre class="prompt">${esc(l.prompt)}</pre></div>`:''}
+        ${l.readout?`<div class="l-blk"><h4>결과 읽는 법</h4><p class="l-readout">${esc(l.readout)}</p></div>`:''}
         <div class="l-blk"><h4>실습</h4><ul class="pr">${pr}</ul></div>
         <div class="l-quiz"><div class="lq">Q. ${esc(l.q)}</div><div class="la">${esc(l.a)}</div></div>
         ${use}${iv}</div></details>`;
