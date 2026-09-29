@@ -96,6 +96,8 @@
   .desc{font-size:12.5px;color:var(--ink-2);grid-column:2;}
   .item .meta{grid-column:2;}
   .kind-lesson{border-left:3px solid var(--study);}
+  .golesson{grid-column:2;justify-self:start;margin-top:6px;border:1px solid var(--study);background:var(--study-soft);color:var(--study);
+            font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:6px;}
   .kind-task{border-left:3px solid var(--work);}
   .kind-ex{border-left:3px solid var(--life);}
 
@@ -343,7 +345,8 @@ function itemHTML(s, it){
   return `<div class="item ${kind} ${on?'done':''}">
     <button class="cb" role="checkbox" aria-checked="${on}" aria-label="${esc(it.t)} 완료" data-s="${s}" data-k="${it.k}">${CHECK}</button>
     <div class="meta"><span class="slot">${esc(it.slot)}</span><span class="pb ${it.p}">${it.p}</span></div>
-    <div class="ttl">${esc(it.t)}</div>${it.d?`<div class="desc">${esc(it.d)}</div>`:''}</div>`;
+    <div class="ttl">${esc(it.t)}</div>${it.d?`<div class="desc">${esc(it.d)}</div>`:''}
+    ${it.k==='lesson'?`<button class="golesson" data-openlesson="${esc(it.lid)}">레슨 열기 ›</button>`:''}</div>`;
 }
 function termsHTML(l){
   if (!l.terms || !l.terms.length) return '';
@@ -369,18 +372,12 @@ function lessonBody(s, l){
         ${l.output?`<div>산출물 · <span>${esc(l.output)}</span></div>`:''}
         ${l.interview?`<div>막아주는 질문 · <span>${esc(l.interview)}</span></div>`:''}</div></div>`:''}`;
 }
-function lessonHTML(s, l){
-  return `<article class="lesson" aria-label="오늘의 레슨">
-    <div class="lesson-h"><span class="lbl">${esc(l.id)} · ${esc(l.mod)} · ${esc(l.p)}</span><h2>${esc(l.title)}</h2><p style="font-size:13px;color:var(--ink-2)">${esc(l.goal)}</p></div>
-    <div class="lesson-b">${lessonBody(s, l)}</div></article>`;
-}
 function renderDay(){
   const s = cur, d = BY[s], r = rec(s), m = monthOf(s);
   const isToday = s === todayIso();
   const st = dayStats(s);
   const chips = [isToday?'<span class="chip today">오늘</span>':'', d.hol?`<span class="chip hol">${esc(d.hol)}</span>`:'',
     d.mba?'<span class="chip mba">MBA</span>':'', `<span class="chip">${weekNo(s)}주차</span>`].join('');
-  const les = d.items.find(i=>i.k==='lesson');
   return `<section class="dayhead">
       <div class="navrow">
         <button class="navbtn" data-nav="-1" aria-label="전날">‹</button>
@@ -391,7 +388,6 @@ function renderDay(){
     </section>
     ${st.n?`<div class="prog"><div class="prog-row"><span>오늘 체크 ${st.done}/${st.n}</span><span>P1 ${st.p1d}/${st.p1}</span></div><div class="bar"><i style="width:${pct(st.done,st.n)}%"></i></div></div>`:''}
     <div class="list">${d.items.map(it=>itemHTML(s,it)).join('')||'<p class="empty">계획된 일이 없는 날이다. 쉰다.</p>'}</div>
-    ${les?lessonHTML(s, LES[les.lid]):''}
     <section class="log" aria-label="공부 기록">
       <h3>공부 시간</h3>
       <div class="mins"><span class="v" id="minv">${r.min}분</span>
@@ -497,6 +493,8 @@ document.addEventListener('toggle', e => {
 }, true);
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.openlesson){ const lid=t.dataset.openlesson; tab='lessons'; openLessons.add(lid); render();
+    const el=document.querySelector(`details.l-item[data-lid="${lid}"]`); if(el) el.scrollIntoView({block:'start'}); return; }
   if (t.dataset.tab){ tab=t.dataset.tab; if (tab==='week') weekStart=mondayOf(cur); try{sessionStorage.setItem('p5500.tab',tab);}catch(e){} render(); window.scrollTo(0,0); return; }
   if (t.dataset.k){ const r=rec(t.dataset.s); r.c[t.dataset.k]=!r.c[t.dataset.k]; if(!r.c[t.dataset.k]) delete r.c[t.dataset.k]; touch(t.dataset.s); const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if (t.dataset.nav){ const n=addDays(cur,+t.dataset.nav); if (BY[n]) { cur=n; render(); } return; }
