@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""레슨별 실무 상세 — code(복붙 코드), prompt(AI 프롬프트 전문), readout(결과 읽는 법).
+"""레슨별 실무 상세. code(복붙 코드), prompt(AI 프롬프트 전문), readout(결과 읽는 법).
 plan.py가 이 DETAIL을 각 레슨에 붙인다. 없는 레슨은 그대로 둔다."""
 
 DETAIL = {}
@@ -20,12 +20,12 @@ d("L01",
 그리고 1종 오류와 2종 오류가 이 실험에서 각각 어떤 실무 손해로 이어지는지 한 줄씩 알려줘.""",
   readout="""가설을 쓸 때 확인할 것:
 · H0는 항상 '차이가 없다'. 검정은 이걸 버릴 근거를 찾는 것이지 H1을 증명하는 게 아니다.
-· 양측(다르다) vs 단측(더 낫다) — 특별한 이유가 없으면 양측이 기본. 단측은 반대 방향 변화를 못 잡는다.
+· 양측(다르다) vs 단측(더 낫다). 특별한 이유가 없으면 양측이 기본. 단측은 반대 방향 변화를 못 잡는다.
 · 1종 오류(없는 차이를 있다고 판정) = 효과 없는 안을 채택해 비용 낭비.
   2종 오류(있는 차이를 놓침) = 좋은 안을 버림. 어느 쪽 손해가 큰지가 α·검정력 설정을 좌우한다.""")
 
 d("L02",
-  code="""# 표본 크기 감각 — 세 가지 MDE 비교
+  code="""# 표본 크기 감각: 세 가지 MDE 비교
 from statsmodels.stats.proportion import proportion_effectsize
 from statsmodels.stats.power import NormalIndPower
 import math
@@ -41,10 +41,10 @@ for mde in (0.02, 0.01, 0.005):
 """,
   readout="""출력:  +2.0%p → 1,846명·7일 / +1.0%p → 6,726명·21일 / +0.5%p → 25,531명·64일
 · MDE를 절반으로 줄이면 표본은 약 4배(제곱 반비례). 이게 감각의 핵심.
-· 0.5%p는 그룹당 2.5만 명 — 대부분 상품은 현실적으로 못 잡는다. 큰 변화만 테스트하라는 신호.""")
+· 0.5%p는 그룹당 2.5만 명. 대부분 상품은 현실적으로 못 잡는다. 큰 변화만 테스트하라는 신호.""")
 
 d("L03",
-  code="""# sample_size.py — 실험 기간 계산기 (복붙해서 저장)
+  code="""# sample_size.py: 실험 기간 계산기 (복붙해서 저장)
 from statsmodels.stats.proportion import proportion_effectsize
 from statsmodels.stats.power import NormalIndPower
 import math
@@ -71,7 +71,7 @@ print(plan_experiment(0.04, 0.01, 800))
 · 이 함수를 테스트 시작 전에 돌려 '며칠 필요'를 관리대장 비고에 먼저 적는다.""")
 
 d("L04",
-  code="""# 상품별 실험 가능 여부 — 트래픽으로 거르기
+  code="""# 상품별 실험 가능 여부: 트래픽으로 거르기
 import pandas as pd, math
 from statsmodels.stats.proportion import proportion_effectsize
 from statsmodels.stats.power import NormalIndPower
@@ -92,12 +92,12 @@ for mde in (0.005, 0.01, 0.02):
         lambda r: (lambda d: "실험불가" if d > 56 else f"{d}일")(need_days(r.전환율, mde, r.일방문)), axis=1)
 print(products.to_string(index=False))
 """,
-  readout="""· 8주(56일)를 넘으면 '실험 불가'로 표시 — 그 사이 시즌·트렌드가 섞여 결과를 못 믿는다.
+  readout="""· 8주(56일)를 넘으면 '실험 불가'로 표시. 그 사이 시즌·트렌드가 섞여 결과를 못 믿는다.
 · 트래픽 적은 상품(라놀린10ml)은 작은 MDE 칸이 전부 '실험불가'로 뜬다.
 · 결론: 트래픽 적은 상품은 큰 변화(2%p)만 테스트하거나, 여러 상품을 묶거나, 실험 대신 전후+대조군(M4).""")
 
 d("L05",
-  code="""# Peeking이 거짓 양성을 얼마나 키우나 — 직접 시뮬레이션
+  code="""# Peeking이 거짓 양성을 얼마나 키우나: 직접 시뮬레이션
 import numpy as np
 rng = np.random.default_rng(0)
 base, daily, days, trials = 0.04, 800, 21, 4000
@@ -134,7 +134,7 @@ d("L06",
 · 이 템플릿 1장이 포트폴리오에서 '실험 체계를 만들었다'의 증거물이 된다.""")
 
 d("L07",
-  code="""# 메타 소재 테스트 — 광고세트 내 비교가 왜 편향되나 확인
+  code="""# 메타 소재 테스트: 광고세트 내 비교가 왜 편향되나 확인
 # 운영_소재 CSV에서 같은 광고세트에 여러 소재가 있는 경우를 찾는다
 import csv
 from collections import defaultdict
@@ -156,7 +156,7 @@ print("\\n→ 이 세트들은 메타가 노출을 몰아줘서 소재 간 CTR �
 · 노출 단위 CTR은 같은 사람의 반복 노출이 섞여 독립이 아니다. 도달(사람) 기준을 함께 본다.""")
 
 d("L08",
-  code="""# 61건 인벤토리 자동 골격 — 테스트 운영기록에서 실험 목록 추출
+  code="""# 61건 인벤토리 자동 골격: 테스트 운영기록에서 실험 목록 추출
 import csv, glob
 files = glob.glob('sheets/test__*.csv')
 inv = []

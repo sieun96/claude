@@ -10,7 +10,7 @@ MORE = {
 특히 '차이가 없다', 'A가 이겼다' 같은 단정을 p값·신뢰구간 기준으로 바꿔줘. [문장 3개]"""},
 
 "L12": {"code":"""from statsmodels.stats.proportion import proportions_ztest, confint_proportions_2indep
-a_n, a_conv = 5200, 218      # 소재A: 노출(방문), 구매 — 실제값으로 교체
+a_n, a_conv = 5200, 218      # 소재A: 노출(방문), 구매, 실제값으로 교체
 b_n, b_conv = 5180, 251
 stat, p = proportions_ztest([a_conv, b_conv], [a_n, b_n])
 lo, hi = confint_proportions_2indep(b_conv, b_n, a_conv, a_n, method='wald')

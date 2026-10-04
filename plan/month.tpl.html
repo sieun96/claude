@@ -150,6 +150,6 @@ for (const [ym, m] of Object.entries(PLAN.months)) {
   </section>`);
 }
 out.push(`<section class="month" aria-label="우선순위"><div class="m-head"><div class="m-name">P</div><div class="m-theme"><h2>우선순위</h2><p>일정이 밀리면 P3부터 뺀다.</p></div></div>
-  <div class="prio">${['P1','P2','P3'].map(k=>`<div class="pr ${k}"><b>${k}</b>${esc(PLAN.priority[k].name)} — ${esc(PLAN.priority[k].desc)}</div>`).join('')}</div></section>`);
+  <div class="prio">${['P1','P2','P3'].map(k=>`<div class="pr ${k}"><b>${k}</b>${esc(PLAN.priority[k].name)}: ${esc(PLAN.priority[k].desc)}</div>`).join('')}</div></section>`);
 document.getElementById('months').innerHTML = out.join('');
 </script>
