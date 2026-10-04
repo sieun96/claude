@@ -48,6 +48,8 @@
   .m-theme{display:flex;flex-direction:column;gap:2px;}
   .m-theme h2{font-size:19px;}
   .m-theme p{font-size:12.5px;color:var(--ink-2);}
+  .m-outcome{font-size:13.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);
+             border-left:3px solid var(--accent);border-radius:4px;padding:9px 12px;line-height:1.5;}
   .m-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
   @media(max-width:700px){.m-cols{grid-template-columns:1fr;}}
   .m-box{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:9px 12px;}
@@ -87,10 +89,13 @@
     @page{size:A4 landscape;margin:9mm;}
     body{background:#fff;} .wrap{max-width:none;padding:0;gap:0;}
     .intro{display:none;} #months{gap:0;}
-    .month{break-after:page;gap:8px;} .month:last-child{break-after:auto;}
+    .month{break-after:page;gap:6px;} .month:last-child{break-after:auto;}
     .cal-w{overflow:visible;} .cal{min-width:0;}
-    .cell{min-height:78px;}
-    .m-name{font-size:32px;}
+    .cell{min-height:62px;}
+    .m-name{font-size:28px;}
+    .m-outcome{font-size:11px;padding:5px 9px;}
+    .m-box{padding:7px 10px;} .m-box li{font-size:11.5px;}
+    .m-head{padding-bottom:7px;}
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -115,7 +120,6 @@ const out = [];
 for (const [ym, m] of Object.entries(PLAN.months)) {
   const [y, mo] = ym.split('-').map(Number);
   let first = new Date(y, mo-1, 1), last = new Date(y, mo, 0);
-  if (ym === '2026-10') first = new Date(2026, 8, 28);
   if (ym === '2027-03') last = new Date(2027, 2, 28);
   const start = new Date(first); start.setDate(start.getDate() - ((start.getDay()+6)%7));
   const end = new Date(last); end.setDate(end.getDate() + (6-((end.getDay()+6)%7)));
@@ -128,13 +132,14 @@ for (const [ym, m] of Object.entries(PLAN.months)) {
       if (it.k === 'lesson') { const l = LES[it.lid]; evs.push(`<div class="ev s">${esc(l.id)} ${esc(l.short)}<span class="p">${l.p}</span></div>`); }
       else if (it.k.startsWith('t')) evs.push(`<div class="ev w">${esc(it.short||it.t)}<span class="p">${it.p}</span></div>`);
       else if (it.k === 'ex') evs.push(`<div class="ev l">홈트</div>`);
-      else if (it.k === 'wk') evs.push(`<div class="ev w">청구서 캡처<span class="p">P1</span></div>`);
+      else if (it.k === 'wk') evs.push(`<div class="ev w">주간 트래킹<span class="p">P1</span></div>`);
     });
     const label = (d.getDate()===1 || s===iso(first)) ? (d.getMonth()+1)+'/'+d.getDate() : d.getDate();
     cells += `<div class="cell ${day.hol?'hol':''}"><div class="c-top"><span class="c-num">${label}</span>${day.mba?'<span class="c-tag mba">MBA</span>':''}${day.hol?`<span class="c-tag h">${esc(day.hol)}</span>`:''}</div>${evs.join('')}</div>`;
   }
   out.push(`<section class="month" aria-label="${esc(m.name)}">
     <div class="m-head"><div class="m-name">${esc(m.name)}</div><div class="m-theme"><h2>${esc(m.theme)}</h2><p>공부: ${esc(m.study)}</p></div></div>
+    ${m.outcome ? `<div class="m-outcome">🎯 ${esc(m.outcome)}</div>` : ''}
     <div class="m-cols">
       <div class="m-box"><h3>이달의 목표</h3><ul>${m.goals.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
       <div class="m-box"><h3>산출물</h3><ul>${m.outputs.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></div>
