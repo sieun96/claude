@@ -198,3 +198,79 @@ try:
                        "readout": _v.get("readout"), "interview": _v.get("interview")}
 except ImportError:
     pass
+
+
+# ============================== 도구 (t-test·pandas·SQL) ==============================
+d("L27",
+  code="""# Welch t-검정 (평균 비교) + 평균용 표본 크기
+from scipy import stats
+import numpy as np
+
+# 두 그룹 객단가(원) 예시 - 실제값으로 교체
+a = np.array([32000, 41000, 28000, 55000, 39000, 47000])
+b = np.array([45000, 52000, 38000, 61000, 49000, 58000])
+
+t, p = stats.ttest_ind(a, b, equal_var=False)   # equal_var=False = Welch
+print(f"평균 A {a.mean():,.0f}  B {b.mean():,.0f}  차이 {b.mean()-a.mean():+,.0f}")
+print(f"t={t:.2f}  p={p:.3f}  {'유의' if p<0.05 else '유의하지 않음'}")
+
+# 평균용 표본 크기 (잡고 싶은 차이 delta, 표준편차 sd 필요)
+from statsmodels.stats.power import TTestIndPower
+sd = np.std(np.concatenate([a, b]), ddof=1)
+delta = 5000                       # 잡고 싶은 평균 차이(원)
+n = TTestIndPower().solve_power(effect_size=delta/sd, alpha=0.05,
+                                power=0.8, alternative='two-sided')
+print(f"그룹당 필요 표본 ≈ {int(np.ceil(n))}명 (차이 {delta:,}원, 표준편차 {sd:,.0f})")
+""",
+  readout="""· t가 약 2를 넘고 p<0.05면 평균 차이가 우연이 아니다.
+· 비율(전환율)이 아니라 '평균'을 볼 때만 이걸 쓴다. 전환율엔 L12 z-검정.
+· 평균용 표본은 표준편차가 클수록, 잡으려는 차이가 작을수록 커진다. 비율 계산기(L03)와 공식이 다르다(표준편차가 들어감).
+· 객단가처럼 큰손 이상치가 있으면 로그변환하거나 비모수(만-휘트니, stats.mannwhitneyu)로 교차확인.""")
+
+d("L28",
+  code="""# pandas 핵심 4개만 읽을 줄 알면 된다
+import pandas as pd
+df = pd.read_csv('소재.csv')                       # 내 데이터로 교체
+
+# 1) 필터: 조건으로 행 고르기 (ROAS 3 이상)
+good = df[df['roas'] >= 3]
+
+# 2) 그룹 집계: 각도별 평균 ROAS와 건수 (엑셀 피벗)
+by_angle = df.groupby('각도').agg(roas=('roas', 'mean'),
+                                  n=('roas', 'size')).round(2)
+
+# 3) 합치기: 소재표 + 원가표 (엑셀 VLOOKUP)
+merged = df.merge(cost_df, on='소재명', how='left')
+
+# 4) 피벗: 각도 x 소구별 평균 전환율
+pivot = df.pivot_table(index='각도', columns='소구', values='cvr', aggfunc='mean')
+
+print(by_angle)
+""",
+  readout="""· groupby = 엑셀 피벗의 '묶어서 집계', merge = VLOOKUP, pivot_table = 피벗테이블.
+· 이 4개만 읽으면 Claude가 짠 분석 코드의 대부분을 '뭘 하는지' 설명할 수 있다.
+· 면접용: "분석은 파이썬 pandas로 합니다. 필터·그룹집계·병합·피벗으로 소재 성과를 각도별로 집계했습니다." 라고 말할 수 있으면 충분.""")
+
+d("L38",
+  code="""-- 1) 일자별 주문수와 구매전환율
+SELECT order_date,
+       COUNT(*)                     AS orders,
+       COUNT(*) * 1.0 / MAX(visits) AS cvr
+FROM   orders
+WHERE  order_date >= '2026-09-01'
+GROUP  BY order_date
+ORDER  BY order_date;
+
+-- 2) 채널별 매출 (주문 x 유저 JOIN)
+SELECT u.channel,
+       SUM(o.amount) AS revenue,
+       COUNT(*)      AS orders
+FROM   orders o
+JOIN   users  u ON o.user_id = u.id
+GROUP  BY u.channel
+ORDER  BY revenue DESC;
+""",
+  readout="""· 뼈대 다섯: SELECT(뭘) · FROM(어디서) · WHERE(조건) · GROUP BY(묶기) · JOIN(연결).
+· 집계함수(COUNT·SUM·AVG)를 쓰면 반드시 GROUP BY로 묶는 기준을 준다.
+· 이 두 패턴(일자별 집계, 테이블 JOIN)이 그로스 실무 쿼리의 절반이다. 코호트·리텐션도 날짜·단계별 GROUP BY의 확장.
+· 면접용: "SQL로 일자별 전환율, 채널별 ROAS를 직접 뽑습니다." 라고 말할 수 있으면 'SQL 가능' 요건에 대응.""")
