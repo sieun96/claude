@@ -463,7 +463,7 @@ function glossaryHTML(){
       return rows.length?`<div><h4>${esc(cat)}</h4><div class="terms">${rows.map(g=>`<div class="term"><b>${esc(g.t)}</b><span>${esc(g.d)}</span><i>예) ${esc(g.ex)}</i></div>`).join('')}</div></div>`:''; }).join('')}</div></details>`;
 }
 function renderLessons(){
-  const MN={M1:'실험 설계와 표본 크기',M2:'비율 비교와 p값',M3:'회귀 분석',M4:'시계열','도구':'실무 역량 (지표·t-test·pandas·SQL)','면접':'면접 준비','지원':'지원·협상'};
+  const MN={M1:'실험 설계와 표본 크기',M2:'비율 비교와 p값',M3:'회귀 분석',M4:'시계열','도구':'실무 역량 (지표·캠페인·t-test·pandas·SQL)','면접':'면접 준비','지원':'지원·협상'};
   const mods={}; PLAN.lessons.forEach(l=>{(mods[l.mod]=mods[l.mod]||[]).push(l);});
   let out = `<h1 style="font-size:20px">레슨 <span style="font-size:13px;color:var(--mute);font-weight:400">${PLAN.lessons.length}개 · 체크는 오늘 탭과 같이 저장</span></h1>${glossaryHTML()}`;
   for(const m in mods){
