@@ -133,6 +133,7 @@ for (const [ym, m] of Object.entries(PLAN.months)) {
       else if (it.k.startsWith('t')) evs.push(`<div class="ev w">${esc(it.short||it.t)}<span class="p">${it.p}</span></div>`);
       else if (it.k === 'ex') evs.push(`<div class="ev l">홈트</div>`);
       else if (it.k === 'wk') evs.push(`<div class="ev w">주간 트래킹<span class="p">P1</span></div>`);
+      else if (it.k === 'appt') evs.push(`<div class="ev" style="color:var(--p1);font-weight:700">● 약속</div>`);
     });
     const label = (d.getDate()===1 || s===iso(first)) ? (d.getMonth()+1)+'/'+d.getDate() : d.getDate();
     cells += `<div class="cell ${day.hol?'hol':''}"><div class="c-top"><span class="c-num">${label}</span>${day.mba?'<span class="c-tag mba">MBA</span>':''}${day.hol?`<span class="c-tag h">${esc(day.hol)}</span>`:''}</div>${evs.join('')}</div>`;
