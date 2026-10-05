@@ -200,7 +200,28 @@ except ImportError:
     pass
 
 
-# ============================== 도구 (t-test·pandas·SQL) ==============================
+# ============================== 도구 (지표·t-test·pandas·SQL) ==============================
+d("L45",
+  code="""# 퍼포먼스 핵심 지표 계산 (내 숫자로 교체)
+ad_spend      = 10_000_000   # 광고비(원)
+new_customers = 250          # 신규 고객 수
+total_revenue = 46_000_000   # 전체 매출(모든 채널)
+total_mktg    = 12_000_000   # 전체 마케팅비
+
+cac = ad_spend / new_customers
+mer = total_revenue / total_mktg          # = Blended ROAS 개념
+print(f"CAC {cac:,.0f}원   MER {mer:.1f}")
+
+# LTV 간단 추정: 평균주문 x 연구매횟수 x 유지연수 x 마진율
+aov, freq, years, margin = 42000, 3.2, 1.5, 0.25
+ltv = aov * freq * years * margin
+print(f"LTV {ltv:,.0f}원   LTV:CAC {ltv/cac:.1f}  (3 이상이면 건강)")
+""",
+  readout="""· CAC는 낮을수록, LTV:CAC는 높을수록(3 이상 건강) 좋다.
+· MER는 매체 ROAS를 다 합친 현실 효율이라, 매체별 ROAS를 단순 합한 값보다 보통 낮다(기여 중복 때문).
+· ROAS 하나로 판단하지 말 것. ROAS 5라도 마진이 얇거나 CAC가 LTV를 넘으면 적자다.
+· LTV는 가정(유지기간·마진)이 많으니 단정하지 말고 '범위'로 말한다.""")
+
 d("L27",
   code="""# Welch t-검정 (평균 비교) + 평균용 표본 크기
 from scipy import stats
